@@ -291,7 +291,6 @@ export function activate(context: vscode.ExtensionContext) {
       }
     })
   );
-
   context.subscriptions.push(
     vscode.commands.registerCommand("darkest.addInstant", () => {
       const editor = vscode.window.activeTextEditor;
@@ -385,7 +384,7 @@ async function updateDiagnostics(
         continue;
       }
 
-      const keyword = line.text.match(/^\w+(?=:)/)?.[0]!;
+      const keyword = line.text.match(/\w+(?=:)/)?.[0]!;
 
       if (!gameMechanicsSchema[keyword]) {
         const diagnostic = new vscode.Diagnostic(
@@ -438,9 +437,15 @@ async function updateDiagnostics(
           );
           diagnostics.push(diagnostic);
         } else {
-          const expectedType = gameMechanicsSchema[keyword][param].type;
-          const allowedValues =
-            gameMechanicsSchema[keyword][param].allowed_values;
+          let expectedType = "";
+          if(checkIfMonsterFile() === true){
+            const monsterType = gameMechanicsSchema[keyword][param].monsterType;
+            expectedType = monsterType || gameMechanicsSchema[keyword][param].type;
+          }
+          else{
+            expectedType = gameMechanicsSchema[keyword][param].type;
+          }
+          const allowedValues = gameMechanicsSchema[keyword][param].allowed_values;
           const value = values.join(" ").trim();
           const valueValidation = validator(value, expectedType);
           const isAllowed = isAllowedValue(value, allowedValues);
@@ -485,3 +490,9 @@ const isAllowedValue = (value: any, allowedValues?: any[]) => {
     return allowedValues.map((v) => v.toString()).includes(normalizedValue);
   });
 };
+
+function checkIfMonsterFile(): boolean {
+  const editor = vscode.window.activeTextEditor;
+  if(editor){console.log(editor.document.uri.fsPath);}
+  return editor ? editor.document.uri.fsPath.includes("\\monsters\\") : false;
+}

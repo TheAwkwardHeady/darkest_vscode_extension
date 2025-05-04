@@ -1,6 +1,7 @@
 type Schema = {
   type: "string" | "number" | "boolean" | "string_list" | "number_list" | "range";
-  description: string;
+  monsterType?: "string" | "number" | "boolean" | "string_list" | "number_list" | "range";
+  description?: string;
   allowed_values?: string[] | number[] | boolean[];
   required?: boolean;
   canBeNull?: boolean;
@@ -42,12 +43,10 @@ export const GAME_MECHANICS_SCHEMA: {
     ".on_hit": {
       type: "boolean",
       description: "Indicates if the effect triggers on a hit.",
-      //required: true,
     },
     ".on_miss": {
       type: "boolean",
       description: "Indicates if the effect triggers on a miss.",
-      //required: true,
     },
     ".queue": {
       type: "boolean",
@@ -266,11 +265,12 @@ export const GAME_MECHANICS_SCHEMA: {
     ".shuffletarget": {
       type: "boolean",
       description: "Indicates if the target is shuffled.",
-      allowed_values: [1, 0],
+      canBeNull: true
     },
     ".shuffleparty": {
       type: "boolean",
       description: "Indicates if the party is shuffled.",
+      canBeNull: true
     },
     ".destealth": {
       type: "boolean",
@@ -359,7 +359,6 @@ export const GAME_MECHANICS_SCHEMA: {
     },
     ".monsterType": {
       type: "string",
-      allowed_values: ["unholy", "man", "beast", "eldritch", "vampire", "husk"],
       description: "Specifies the monster type affected by the effect.",
     },
     ".capture": {
@@ -653,6 +652,226 @@ export const GAME_MECHANICS_SCHEMA: {
       description: "Skill type",
       //allowed_values: ["melee", "ranged", "move", "teleport", ""],
     },
+    ".per_battle_limit": {
+      type: "number",
+      description: "Limit per battle",
+    },
+    ".per_turn_limit": {
+      type: "number",
+      description: "Limit per turn",
+    },
+    ".is_continue_turn": {
+      type: "boolean",
+      description: "Whether the skill continues the turn",
+    },
+    ".launch": {
+      type: "string",
+      description: "Launch ranks",
+    },
+    ".target": {
+      type: "string",
+      description: "Target ranks",
+      canBeNull: true,
+    },
+    ".self_target_valid": {
+      type: "boolean",
+      description: "Whether self-targeting is valid",
+    },
+    ".is_crit_valid": {
+      type: "boolean",
+      description: "Whether critical hits are valid",
+    },
+    ".effect": {
+      type: "string_list",
+      description: "Effect IDs",
+    },
+    ".valid_modes": {
+      type: "string_list",
+      description: "Valid mode IDs",
+    },
+    ".ignore_stealth": {
+      type: "boolean",
+      description: "Whether the skill ignores stealth",
+    },
+    ".ignore_guard": {
+      type: "boolean",
+      description: "Whether the skill ignores guard",
+    },
+    ".can_miss": {
+      type: "boolean",
+      description: "Whether the skill can miss",
+    },
+    ".can_be_riposted": {
+      type: "boolean",
+      description: "Whether the skill can be riposted",
+    },
+    ".ignore_protection": {
+      type: "boolean",
+      description: "Whether the skill ignores protection",
+    },
+    ".required_performer_hp_range": {
+      type: "range",
+      description: "Required HP range for the performer",
+    },
+    ".rank_damage_modifiers": {
+      type: "number_list",
+      description: "Damage modifiers for ranks",
+    },
+    ".heal": {
+      type: "range",
+      description: "Healing range",
+    },
+    ".can_crit_heal": {
+      type: "boolean",
+      description: "Whether critical healing is possible",
+    },
+    ".is_stall_invalidating": {
+      type: "boolean",
+      description: "Whether the skill invalidates stalling",
+    },
+    ".refresh_after_each_wave": {
+      type: "boolean",
+      description: "Whether the skill refreshes after each wave",
+    },
+    ".damage_heal_base_class_ids": {
+      type: "string_list",
+      description: "Base class IDs for damage or healing",
+    },
+    ".ignore_deathsdoor": {
+      type: "boolean",
+      description: "Whether the skill ignores death's door",
+    },
+    ".icon": {
+      type: "string",
+      description: "Icon name",
+    },
+    ".anim": {
+      type: "string",
+      description: "Animation name",
+    },
+    ".fx": {
+      type: "string",
+      description: "Effect name",
+    },
+    ".targfx": {
+      type: "string",
+      description: "Target effect name",
+    },
+    ".targheadfx": {
+      type: "string",
+      description: "Target head effect name",
+    },
+    ".targchestfx": {
+      type: "string",
+      description: "Target chest effect name",
+    },
+    ".misstargfx": {
+      type: "string",
+      description: "Missed target effect name",
+    },
+    ".misstargheadfx": {
+      type: "string",
+      description: "Missed target head effect name",
+    },
+    ".misstargchestfx": {
+      type: "string",
+      description: "Missed target chest effect name",
+    },
+    ".area_pos_offset": {
+      type: "range",
+      description: "Area position offset (X, Y)",
+    },
+    ".target_area_pos_offset": {
+      type: "range",
+      description: "Target area position offset (X, Y)",
+    },
+    ".reset_source_stance": {
+      type: "boolean",
+      description: "Whether the source stance is reset",
+    },
+    ".reset_target_stance": {
+      type: "boolean",
+      description: "Whether the target stance is reset",
+    },
+    ".can_display_selection": {
+      type: "boolean",
+      description: "Whether the selection can be displayed",
+    },
+    ".hide_performer_health": {
+      type: "boolean",
+      description: "Whether the performer's health is hidden",
+    },
+    ".condensed_tooltip_effects": {
+      type: "boolean",
+      description: "Whether effects are condensed in the tooltip",
+    },
+    ".condensed_tooltip_stats": {
+      type: "boolean",
+      description: "Whether stats are condensed in the tooltip",
+    },
+    ".condensed_tooltip_type": {
+      type: "boolean",
+      description: "Whether type is condensed in the tooltip",
+    },
+    ".condensed_tooltip_effects_per_line": {
+      type: "number",
+      description: "Number of effects per line in the tooltip",
+    },
+    ".nil": {
+      type: "boolean",
+      description: "Hides skill stats and other information",
+    },
+    ".custom_target_anim": {
+      type: "string",
+      description: "Custom target animation name",
+    },
+    ".custom_idle_anim_name": {
+      type: "string",
+      description: "Custom idle animation name",
+    },
+    ".custom_idle_round_duration": {
+      type: "number",
+      description: "Custom idle round duration",
+    },
+    ".can_display_performer_selection_after_turn": {
+      type: "boolean",
+      description: "Whether performer selection can be displayed after turn",
+    },
+    ".ignore_riposte": {
+      type: "boolean",
+      description: "Whether the skill ignores riposte",
+    }
+  },
+  combat_move_skill: {
+    ".id": {
+      type: "string",
+      description: "Skill name identifier",
+    },
+    ".dmg": {
+      type: "string",
+      description: "Damage range for monsters or value for heroes",
+    },
+    ".atk": {
+      type: "number",
+      description: "Attack value",
+    },
+    ".move": {
+      type: "range",
+      description: "Movement values",
+    },
+    ".crit": {
+      type: "number",
+      description: "Critical hit value",
+    },
+    ".level": {
+      type: "number",
+      description: "Skill level value",
+    },
+    ".type": {
+      type: "string",
+      description: "Skill type",
+      //allowed_values: ["melee", "ranged", "move", "teleport", ""],
+    },
     ".starting_cooldown": {
       type: "number",
       description: "Starting cooldown value",
@@ -723,7 +942,271 @@ export const GAME_MECHANICS_SCHEMA: {
       description: "Whether the skill ignores protection",
     },
     ".required_performer_hp_range": {
+      type: "range",
+      description: "Required HP range for the performer",
+    },
+    ".rank_damage_modifiers": {
+      type: "number_list",
+      description: "Damage modifiers for ranks",
+    },
+    ".heal": {
+      type: "range",
+      description: "Healing value",
+    },
+    ".can_crit_heal": {
+      type: "boolean",
+      description: "Whether critical healing is possible",
+    },
+    ".generation_guaranteed": {
+      type: "boolean",
+      description: "Whether generation is guaranteed",
+    },
+    ".is_user_selected_targets": {
+      type: "boolean",
+      description: "Whether the user selects targets",
+    },
+    ".is_knowledgeable": {
+      type: "boolean",
+      description: "Whether the skill is knowledgeable",
+    },
+    ".is_monster_rerank_valid_on_attack": {
+      type: "boolean",
+      description: "Whether monster rerank is valid on attack",
+    },
+    ".is_monster_rerank_valid_on_friendly_presentation_end": {
+      type: "boolean",
+      description:
+        "Whether monster rerank is valid on friendly presentation end",
+    },
+    ".is_monster_rerank_valid_on_friendly_post_result": {
+      type: "boolean",
+      description: "Whether monster rerank is valid on friendly post result",
+    },
+    ".is_stall_invalidating": {
+      type: "boolean",
+      description: "Whether the skill invalidates stalling",
+    },
+    ".refresh_after_each_wave": {
+      type: "boolean",
+      description: "Whether the skill refreshes after each wave",
+    },
+    ".damage_heal_base_class_ids": {
+      type: "string_list",
+      description: "Base class IDs for damage or healing",
+    },
+    ".ignore_deathsdoor": {
+      type: "boolean",
+      description: "Whether the skill ignores death's door",
+    },
+    ".icon": {
       type: "string",
+      description: "Icon name",
+    },
+    ".anim": {
+      type: "string",
+      description: "Animation name",
+    },
+    ".fx": {
+      type: "string",
+      description: "Effect name",
+    },
+    ".targfx": {
+      type: "string",
+      description: "Target effect name",
+    },
+    ".targheadfx": {
+      type: "string",
+      description: "Target head effect name",
+    },
+    ".targchestfx": {
+      type: "string",
+      description: "Target chest effect name",
+    },
+    ".misstargfx": {
+      type: "string",
+      description: "Missed target effect name",
+    },
+    ".misstargheadfx": {
+      type: "string",
+      description: "Missed target head effect name",
+    },
+    ".misstargchestfx": {
+      type: "string",
+      description: "Missed target chest effect name",
+    },
+    ".area_pos_offset": {
+      type: "range",
+      description: "Area position offset (X, Y)",
+    },
+    ".target_area_pos_offset": {
+      type: "range",
+      description: "Target area position offset (X, Y)",
+    },
+    ".reset_source_stance": {
+      type: "boolean",
+      description: "Whether the source stance is reset",
+    },
+    ".reset_target_stance": {
+      type: "boolean",
+      description: "Whether the target stance is reset",
+    },
+    ".can_display_selection": {
+      type: "boolean",
+      description: "Whether the selection can be displayed",
+    },
+    ".hide_performer_health": {
+      type: "boolean",
+      description: "Whether the performer's health is hidden",
+    },
+    ".condensed_tooltip_effects": {
+      type: "boolean",
+      description: "Whether effects are condensed in the tooltip",
+    },
+    ".condensed_tooltip_stats": {
+      type: "boolean",
+      description: "Whether stats are condensed in the tooltip",
+    },
+    ".condensed_tooltip_type": {
+      type: "boolean",
+      description: "Whether type is condensed in the tooltip",
+    },
+    ".condensed_tooltip_effects_per_line": {
+      type: "number",
+      description: "Number of effects per line in the tooltip",
+    },
+    ".nil": {
+      type: "boolean",
+      description: "Hides skill stats and other information",
+    },
+    ".custom_target_anim": {
+      type: "string",
+      description: "Custom target animation name",
+    },
+    ".custom_idle_anim_name": {
+      type: "string",
+      description: "Custom idle animation name",
+    },
+    ".custom_idle_round_duration": {
+      type: "number",
+      description: "Custom idle round duration",
+    },
+    ".has_crit_vo": {
+      type: "boolean",
+      description: "Whether critical voiceover is present",
+    },
+    ".can_display_skill_name": {
+      type: "boolean",
+      description: "Whether the skill name can be displayed",
+    },
+    ".can_display_performer_selection_after_turn": {
+      type: "boolean",
+      description: "Whether performer selection can be displayed after turn",
+    },
+    ".ignore_riposte": {
+      type: "boolean",
+      description: "Whether the skill ignores riposte",
+    },
+  },
+  skill: {
+    ".id": {
+      type: "string",
+      description: "Skill name identifier",
+    },
+    ".dmg": {
+      type: "range",
+      description: "Damage range for monsters or value for heroes",
+      canBeNull: true
+    },
+    ".atk": {
+      type: "number",
+      description: "Attack value",
+      canBeNull: true
+    },
+    ".move": {
+      type: "range",
+      description: "Movement values",
+    },
+    ".crit": {
+      type: "number",
+      description: "Critical hit value",
+      canBeNull: true
+    },
+    ".type": {
+      type: "string",
+      description: "Skill type",
+      //allowed_values: ["melee", "ranged", "move", "teleport", ""],
+    },
+    ".starting_cooldown": {
+      type: "number",
+      description: "Starting cooldown value",
+    },
+    ".per_battle_limit": {
+      type: "number",
+      description: "Limit per battle",
+    },
+    ".per_turn_limit": {
+      type: "number",
+      description: "Limit per turn",
+    },
+    ".is_continue_turn": {
+      type: "boolean",
+      description: "Whether the skill continues the turn",
+    },
+    ".launch": {
+      type: "string",
+      description: "Launch ranks",
+    },
+    ".target": {
+      type: "string",
+      description: "Target ranks",
+      canBeNull: true,
+    },
+    ".self_target_valid": {
+      type: "boolean",
+      description: "Whether self-targeting is valid",
+    },
+    ".extra_targets_chance": {
+      type: "number",
+      description: "Chance for extra targets",
+    },
+    ".extra_targets_count": {
+      type: "number",
+      description: "Count of extra targets",
+    },
+    ".is_crit_valid": {
+      type: "boolean",
+      description: "Whether critical hits are valid",
+    },
+    ".effect": {
+      type: "string_list",
+      description: "Effect IDs",
+    },
+    ".valid_modes": {
+      type: "string_list",
+      description: "Valid mode IDs",
+    },
+    ".ignore_stealth": {
+      type: "boolean",
+      description: "Whether the skill ignores stealth",
+    },
+    ".ignore_guard": {
+      type: "boolean",
+      description: "Whether the skill ignores guard",
+    },
+    ".can_miss": {
+      type: "boolean",
+      description: "Whether the skill can miss",
+    },
+    ".can_be_riposted": {
+      type: "boolean",
+      description: "Whether the skill can be riposted",
+    },
+    ".ignore_protection": {
+      type: "boolean",
+      description: "Whether the skill ignores protection",
+    },
+    ".required_performer_hp_range": {
+      type: "range",
       description: "Required HP range for the performer",
     },
     ".rank_damage_modifiers": {
@@ -888,270 +1371,6 @@ export const GAME_MECHANICS_SCHEMA: {
       description: "Whether the skill ignores riposte",
     }
   },
-  combat_move_skill: {
-    ".id": {
-      type: "string",
-      description: "Skill name identifier",
-    },
-    ".dmg": {
-      type: "string",
-      description: "Damage range for monsters or value for heroes",
-    },
-    ".atk": {
-      type: "number",
-      description: "Attack value",
-    },
-    ".move": {
-      type: "range",
-      description: "Movement values",
-    },
-    ".crit": {
-      type: "number",
-      description: "Critical hit value",
-    },
-    ".level": {
-      type: "number",
-      description: "Skill level value",
-    },
-    ".type": {
-      type: "string",
-      description: "Skill type",
-      //allowed_values: ["melee", "ranged", "move", "teleport", ""],
-    },
-    ".starting_cooldown": {
-      type: "number",
-      description: "Starting cooldown value",
-    },
-    ".per_battle_limit": {
-      type: "number",
-      description: "Limit per battle",
-    },
-    ".per_turn_limit": {
-      type: "number",
-      description: "Limit per turn",
-    },
-    ".is_continue_turn": {
-      type: "boolean",
-      description: "Whether the skill continues the turn",
-    },
-    ".launch": {
-      type: "string",
-      description: "Launch ranks",
-    },
-    ".target": {
-      type: "string",
-      description: "Target ranks",
-    },
-    ".self_target_valid": {
-      type: "boolean",
-      description: "Whether self-targeting is valid",
-    },
-    ".extra_targets_chance": {
-      type: "number",
-      description: "Chance for extra targets",
-    },
-    ".extra_targets_count": {
-      type: "number",
-      description: "Count of extra targets",
-    },
-    ".is_crit_valid": {
-      type: "boolean",
-      description: "Whether critical hits are valid",
-    },
-    ".effect": {
-      type: "string_list",
-      description: "Effect IDs",
-    },
-    ".valid_modes": {
-      type: "string_list",
-      description: "Valid mode IDs",
-    },
-    ".ignore_stealth": {
-      type: "boolean",
-      description: "Whether the skill ignores stealth",
-    },
-    ".ignore_guard": {
-      type: "boolean",
-      description: "Whether the skill ignores guard",
-    },
-    ".can_miss": {
-      type: "boolean",
-      description: "Whether the skill can miss",
-    },
-    ".can_be_riposted": {
-      type: "boolean",
-      description: "Whether the skill can be riposted",
-    },
-    ".ignore_protection": {
-      type: "boolean",
-      description: "Whether the skill ignores protection",
-    },
-    ".required_performer_hp_range": {
-      type: "string",
-      description: "Required HP range for the performer",
-    },
-    ".rank_damage_modifiers": {
-      type: "number_list",
-      description: "Damage modifiers for ranks",
-    },
-    ".heal": {
-      type: "string",
-      description: "Healing value",
-    },
-    ".can_crit_heal": {
-      type: "boolean",
-      description: "Whether critical healing is possible",
-    },
-    ".generation_guaranteed": {
-      type: "boolean",
-      description: "Whether generation is guaranteed",
-    },
-    ".is_user_selected_targets": {
-      type: "boolean",
-      description: "Whether the user selects targets",
-    },
-    ".is_knowledgeable": {
-      type: "boolean",
-      description: "Whether the skill is knowledgeable",
-    },
-    ".is_monster_rerank_valid_on_attack": {
-      type: "boolean",
-      description: "Whether monster rerank is valid on attack",
-    },
-    ".is_monster_rerank_valid_on_friendly_presentation_end": {
-      type: "boolean",
-      description:
-        "Whether monster rerank is valid on friendly presentation end",
-    },
-    ".is_monster_rerank_valid_on_friendly_post_result": {
-      type: "boolean",
-      description: "Whether monster rerank is valid on friendly post result",
-    },
-    ".is_stall_invalidating": {
-      type: "boolean",
-      description: "Whether the skill invalidates stalling",
-    },
-    ".refresh_after_each_wave": {
-      type: "boolean",
-      description: "Whether the skill refreshes after each wave",
-    },
-    ".damage_heal_base_class_ids": {
-      type: "string_list",
-      description: "Base class IDs for damage or healing",
-    },
-    ".ignore_deathsdoor": {
-      type: "boolean",
-      description: "Whether the skill ignores death's door",
-    },
-    ".icon": {
-      type: "string",
-      description: "Icon name",
-    },
-    ".anim": {
-      type: "string",
-      description: "Animation name",
-    },
-    ".fx": {
-      type: "string",
-      description: "Effect name",
-    },
-    ".targfx": {
-      type: "string",
-      description: "Target effect name",
-    },
-    ".targheadfx": {
-      type: "string",
-      description: "Target head effect name",
-    },
-    ".targchestfx": {
-      type: "string",
-      description: "Target chest effect name",
-    },
-    ".misstargfx": {
-      type: "string",
-      description: "Missed target effect name",
-    },
-    ".misstargheadfx": {
-      type: "string",
-      description: "Missed target head effect name",
-    },
-    ".misstargchestfx": {
-      type: "string",
-      description: "Missed target chest effect name",
-    },
-    ".area_pos_offset": {
-      type: "range",
-      description: "Area position offset (X, Y)",
-    },
-    ".target_area_pos_offset": {
-      type: "range",
-      description: "Target area position offset (X, Y)",
-    },
-    ".reset_source_stance": {
-      type: "boolean",
-      description: "Whether the source stance is reset",
-    },
-    ".reset_target_stance": {
-      type: "boolean",
-      description: "Whether the target stance is reset",
-    },
-    ".can_display_selection": {
-      type: "boolean",
-      description: "Whether the selection can be displayed",
-    },
-    ".hide_performer_health": {
-      type: "boolean",
-      description: "Whether the performer's health is hidden",
-    },
-    ".condensed_tooltip_effects": {
-      type: "boolean",
-      description: "Whether effects are condensed in the tooltip",
-    },
-    ".condensed_tooltip_stats": {
-      type: "boolean",
-      description: "Whether stats are condensed in the tooltip",
-    },
-    ".condensed_tooltip_type": {
-      type: "boolean",
-      description: "Whether type is condensed in the tooltip",
-    },
-    ".condensed_tooltip_effects_per_line": {
-      type: "number",
-      description: "Number of effects per line in the tooltip",
-    },
-    ".nil": {
-      type: "boolean",
-      description: "Hides skill stats and other information",
-    },
-    ".custom_target_anim": {
-      type: "string",
-      description: "Custom target animation name",
-    },
-    ".custom_idle_anim_name": {
-      type: "string",
-      description: "Custom idle animation name",
-    },
-    ".custom_idle_round_duration": {
-      type: "number",
-      description: "Custom idle round duration",
-    },
-    ".has_crit_vo": {
-      type: "boolean",
-      description: "Whether critical voiceover is present",
-    },
-    ".can_display_skill_name": {
-      type: "boolean",
-      description: "Whether the skill name can be displayed",
-    },
-    ".can_display_performer_selection_after_turn": {
-      type: "boolean",
-      description: "Whether performer selection can be displayed after turn",
-    },
-    ".ignore_riposte": {
-      type: "boolean",
-      description: "Whether the skill ignores riposte",
-    },
-  },
   riposte_skill: {
     ".id": {
       type: "string",
@@ -1159,6 +1378,7 @@ export const GAME_MECHANICS_SCHEMA: {
     },
     ".dmg": {
       type: "number",
+      monsterType: "range",
       description: "Damage range for monsters or value for heroes",
     },
     ".atk": {
@@ -1335,7 +1555,7 @@ export const GAME_MECHANICS_SCHEMA: {
       description: "Indicates if the mode is targetable.",
     },
     ".keep_rounds_in_ranks": {
-      type: "number",
+      type: "boolean",
       description: "Number of rounds to keep actors in ranks.",
     },
     ".stress_damage_per_turn": {
@@ -1474,13 +1694,16 @@ export const GAME_MECHANICS_SCHEMA: {
   crit: {
     ".effects": {
       type: "string_list",
-      description: "Effect IDs",
+      description: "The list of effects that are fired on CRIT.",
     },
+    ".is_valid_effects_target": {
+      type: "boolean",
+      description: "Whether or not CRIT effects trigger when the actor is hit by a CRIT."
+    }
   },
   tag: {
     ".id": {
       type: "string",
-      description: "The tag's ID",
       required: true
     },
   },
@@ -1511,8 +1734,15 @@ export const GAME_MECHANICS_SCHEMA: {
   activity_modifier: {
     ".override_valid_activity_ids": {
       type: "string_list",
-      description: "The IDs of Hamlet facilities the hero cannot use.",
-      required: true
+      description: "The IDs of Hamlet facilities the hero cannot use."
+    },
+    ".override_stress_removal_amount_low": {
+      type: "number",
+      description: "The minimum amount of stress thats healed by activities."
+    },
+    ".override_stress_removal_amount_high": {
+      type: "number",
+      description: "The maximum amount of stress thats healed by activities."
     },
   },
   quirk_modifier: {
@@ -1545,16 +1775,27 @@ export const GAME_MECHANICS_SCHEMA: {
   deaths_door: {
     ".buffs": {
       type: "string_list",
-      description: "Death's Door IDs",
+      description: "Death's Door buff IDs",
+      canBeNull: true
     },
     ".recovery_buffs": {
       type: "string_list",
       description: "Death's Door Recovery buff IDs",
+      canBeNull: true
     },
     ".recovery_heart_attack_buffs": {
       type: "string_list",
       description: "Heart attack buff IDs",
+      canBeNull: true
     },
+    ".enter_effects": {
+      type: "string_list",
+      description: "Effects fired when the hero enters Death's door",
+    },
+    ".enter_effect_round_cooldown":{
+      type: "number",
+      description: "The cooldown for the Death's Door entering effects",
+    }
   },
   controlled: {
     ".target_rank": {
@@ -1591,22 +1832,453 @@ export const GAME_MECHANICS_SCHEMA: {
     ".attack_friendly_anim": {
       type: "string",
       description:"The ID of the animation.",
-      required: true
     },
     ".attack_friendly_fx": {
       type: "string",
       description:"The ID of the attack's FX.",
-      required: true
     },
     ".attack_friendly_targchestfx": {
       type: "string",
       description:"The ID of the target chest FX.",
-      required: true
     },
     ".attack_friendly_sfx": {
       type: "string",
       description:"The ID of the friendly attack's SFX.",
+    }
+  },
+  progression: {
+    ".has_caretaker_goals": {
+      type: "boolean",
+      description: "If set to true, there will be a new caretaker goal to get the hero to level 6.",
       required: true
+    }
+  },
+  hp_reaction: {
+    ".hp_ratio": {
+      type: "number",
+      description: "HP percentage threshold value.",
+    },
+    ".is_under": {
+      type: "boolean",
+      description: "Whether the reaction is triggered when the current HP goes above(false) or below(true) the threshold",
+    },
+    ".effects": {
+      type: "string_list",
+      description: "The list of effects that are fired on reaction trigger.",
+    }
+  },
+  death_reaction: {
+    ".target_allies": {
+      type: "boolean",
+      description: "Whether or not the death trigger targets alies."
+    },
+    ".target_enemies": {
+      type: "boolean",
+      description: "Whether or not the death trigger targets enemies."
+    },
+    ".effects": {
+      type: "string_list",
+      description: "The list of effects that are fired when the actor dies."
+    },
+  },
+  sorting_index: {
+    ".index": {
+      type: "number",
+      description: "The sorting index.",
+      required: true
+    }
+  },
+  display: {
+    ".size": {
+      type: "number",
+      description: "The monster's size, how many ranks it takes up.",
+      required: true
+    }
+  },
+  enemy_type: {
+    ".id": {
+      type: "string",
+      required: true
+    }
+  },
+  stats: {
+    ".hp":{
+      type: "number",
+      description: "The monster's max HP.",
+      required: true
+    },
+    ".def":{
+      type: "number",
+      description: "The monster's dodge chance.",
+      required: true
+    },
+    ".prot":{
+      type: "number",
+      description: "The monster's PROT value. (1.0 = 100% PROT).",
+      required: true
+    },
+    ".spd":{
+      type: "number",
+      description: "The monster's speed.",
+      required: true
+    },
+    ".stun_resist":{
+      type: "number",
+      description: "The monster's Stun resistance chance.",
+      required: true
+    },
+    ".poison_resist":{
+      type: "number",
+      description: "The monster's Blight resistance chance.",
+      required: true
+    },
+    ".bleed_resist":{
+      type: "number",
+      description: "The monster's Bleed resistance chance.",
+      required: true
+    },
+    ".debuff_resist":{
+      type: "number",
+      description: "The monster's Debuff resistance chance.",
+      required: true
+    },
+    ".move_resist":{
+      type: "number",
+      description: "The monster's Move resistance chance.",
+      required: true
+    }
+  },
+  spawn: {
+    ".effects":{
+      type: "string_list",
+      description: "The effects fired when the monster spawns."
+    },
+    ".wave_effects": {
+      type: "boolean",
+      description: "The effects fired when the monster spawns during wave quests."
+    }
+  },
+  personality: {
+    ".prefskill":{
+      type: "number",
+      description: "Doesn't seem to do anything.",
+      canBeNull: true
+    }
+  },
+  loot: {
+    ".code": {
+      type: "string",
+      description: "The ID of the loot table that's called when the monster dies.",
+      canBeNull: true
+    },
+    ".count": {
+      type: "number",
+      description: "The number of pulls from the loot table.",
+      canBeNull: true
+    },
+    ".raid_finish_quirk_class_id": {
+      type: "string",
+      description: "At the end of the quest, on of the heroes will gain the the quirk. If there are multiple lines .raid_finish_quirk_class_id, one will be picked at random"
+    }
+  },
+  initiative: {
+    ".number_of_turns_per_round": {
+      type: "number",
+      required: true
+    },
+    ".hide_indicator": {
+      type: "boolean"
+    }
+  },
+  monster_brain: {
+    ".id": {
+      type: "string",
+      description: "The monster AI's ID.",
+      required: true
+    }
+  },
+  death_class: {
+    ".monster_class_id": {
+      type: "string",
+      description: "The ID of the monster the current monster will turn into on death.",
+      required: true
+    },
+    ".type": {
+      type: "string",
+      description: "The type of the new monster."
+    },
+    ".is_valid_on_crit": {
+      type: "boolean",
+      description: "Whether or not the monster will change IDs on if the death blow was a CRIT."
+    },
+    ".is_valid_on_bleed_dot": {
+      type: "boolean",
+      description: "Whether or not the monster will change IDs on if the death blow was a Bleed DOT tick."
+    },
+    ".is_valid_on_blight_dot": {
+      type: "boolean",
+      description: "Whether or not the monster will change IDs on if the death blow was a Blight DOT tick."
+    },
+    ".can_die_from_damage": {
+      type: "boolean"
+    },
+    ".change_class_effects": {
+      type: "string_list",
+      description: "Effects fired on monster ID change. (Only triggers for death based ID change.)"
+    }
+  },
+  battle_modifier: {
+    ".accelerate_stall_penalty": {
+      type: "boolean"
+    },
+    ".disable_stall_penalty": {
+      type: "boolean"
+    },
+    ".can_surprise": {
+      type: "boolean"
+    },
+    ".can_be_surprised": {
+      type: "boolean"
+    },
+    ".always_surprise": {
+      type: "boolean"
+    },
+    ".always_be_surprised": {
+      type: "boolean"
+    },
+    ".living_hero_buff_instance_ids": {
+      type: "string_list",
+      description: "List of buffs the heroes have while the monster is alive."
+    },
+    ".living_other_enemy_buffs": {
+      type: "string_list",
+      description: "List of buffs the monster's allies have while the monster is alive."
+    },
+    ".disabled_act_out_combat_start_turn_types": {
+      type: "string_list",
+      description: "List of act-out types that are disabled during the first round of combat."
+    },
+    ".can_be_damaged_directly": {
+      type: "boolean",
+    },
+    ".can_be_missed": {
+      type: "boolean"
+    },
+    ".is_valid_friendly_target": {
+      type: "boolean"
+    },
+    ".can_relieve_stress_from_killing_blow": {
+      type: "boolean"
+    },
+    ".can_be_summon_rank": {
+      type: "boolean"
+    },
+    ".does_count_as_monster_size_for_monster_brain": {
+      type: "boolean"
+    },
+    ".does_count_towards_stall_penalty": {
+      type: "boolean"
+    },
+    ".can_relieve_stress_from_crit": {
+      type: "boolean"
+    }
+  },
+  torchlight_modifier: {
+    ".min": {
+      type: "number",
+      description: "The minimum light level while the monster is alive."
+    },
+    ".max": {
+      type: "number",
+      description: "The maximum light level while the monster is alive."
+    },
+  },
+  controller: {
+    ".stress_per_controlled_turn": {
+      type: "number",
+      description: "The amount of stress gained by heroes while they're charmed by this enemy."
+    }
+  },
+  captor_empty: {
+    ".performing_monster_captor_base_class": {
+      type: "string",
+      description: "The ID of the monster that performs the capture"
+    },
+    ".captor_full_monster_class": {
+      type: "string",
+      description: "The ID of the monster that the current monster will turn into on a successful capture."
+    },
+    ".capture_effects": {
+      type: "string_list",
+      description: "The list of effects applied to the capture target (the captured hero) when captured."
+    },
+    ".reset_hp": {
+      type: "boolean",
+      description: "Whether or not the monster's HP is reset upon a successful capture"
+    },
+    ".count_captor_full_damage": {
+      type: "boolean"
+    },
+  },
+  captor_full: {
+    ".captor_empty_monster_class": {
+      type: "string",
+      description: "The ID of the monster the current monster will turn into when the capture state ends."
+    },
+    ".release_on_death": {
+      type: "boolean",
+      description: "Whether or not the monster realeses the captured hero when the monster dies."
+    },
+    ".release_on_prisoner_at_deaths_door": {
+      type: "boolean",
+      description: "Whether or not the monster realeses the captured hero when they reach Death's Door."
+    },
+    ".per_turn_damage_percent": {
+      type: "number",
+      description: "The amount of DMG percentage the captured hero suffers each turn of the battle."
+    },
+    ".reset_hp": {
+      type: "boolean",
+      description: "Whether or not the monster's HP is reset upon the end of the capture state."
+    },
+    ".use_previous_monster_class_hp": {
+      type: "boolean"
+    },
+    ".add_current_hp": {
+      type: "boolean"
+    },
+    ".switch_class_on_death": {
+      type: "boolean",
+      description: "Whether or not the monster will change IDs, when it dies."
+    },
+    ".release_on_prisoner_affliction": {
+      type: "boolean",
+      description: "Whether or not the monster realeses the captured hero when they reach Death's Door."
+    },
+    ".release_effects": {
+      type: "string_list",
+      description: "The list of effects applied to the capture target (the captured hero) when released."
+    },
+    ".per_turn_stress_damage": {
+      type: "number",
+      description: "The amount of Stress the captured hero suffers each turn of the battle."
+    },
+  },
+  companion: {
+    ".monster_class": {
+      type: "string",
+      description: "Companion monster's ID",
+      required: true
+    },
+    ".buffs": {
+      type: "string_list",
+      description: "The list of buffs the monster has while their compaion is alive"
+    },
+    ".heal_per_turn_percent": {
+      type: "number",
+      description: "The amount of HP healed each turn while the monster's companion is alive. (0.01 = 1%)."
+    }
+  },
+  shape_shifter: {
+    ".monster_class_ids": {
+      type: "string_list",
+      description: "The IDs of monsters the monster can shapeshift into."
+    },
+    ".monster_class_chances": {
+      type: "number_list",
+      description: "The chance for each possible ID, follows the order of monster IDs."
+    },
+    ".monster_class_valid_ranks": {
+      type: "number_list",
+      description: "The rank restriction for each ID, follows the order of monster IDs."
+    },
+    ".round_frequency": {
+      type: "number",
+      description: "How frequently the shapeshifting occurs. (Battle Rounds)."
+    }
+  },
+  shared_health: {
+    ".id": {
+      type: "string",
+      description: "Any monsters that share this ID will add their HP values together to essentially function as one actor.",
+      required: true
+    }
+  },
+  life_link: {
+    ".base_class": {
+      type: "string",
+      description: "The monster base class the monster is life-linked to, when that monster dies, so will this one.",
+      required: true
+    }
+  },
+  wave_spawning: {
+    ".prefers_front": {
+      type: "boolean",
+      description: "If true, the monster will more spawn in the frontranks at the start of a wave.",
+      required: true
+    }
+  },
+  battle_backdrop: {
+    ".background_name": {
+      type: "string"
+    },
+    ".animation": {
+      type: "string"
+    },
+    ".isFlat": {
+      type: "boolean"
+    },
+  },
+  skill_reaction: {
+    ".was_killed_all_heroes_effects": {
+      type: "string_list"
+    },
+    ".was_killed_effects": {
+      type: "string_list"
+    },
+    ".was_killed_other_monsters_effects": {
+      type: "string_list"
+    },
+    ".was_killed_by_hero_effects": {
+      type: "string_list"
+    },
+    ".was_hit_performer_effects": {
+      type: "string_list"
+    },
+    ".was_hit_target_effects": {
+      type: "string_list"
+    }
+  },
+  life_time: {
+    ".alive_round_limit": {
+      type: "number",
+      description: "The maximum amount of rounds the monster can stay alive."
+    },
+    ".does_check_for_loot": {
+      type: "boolean",
+      description: "Whether or not loot is pulled when the monster's life time expires"
+    }
+  },
+  additional_effect: {
+    ".is_valid_trinket_target": {
+      type: "boolean",
+      description: "Whether or not the monster is a valid target for trinket effects."
+    },
+    ".is_valid_trinket_attacker": {
+      type: "boolean",
+      description: "Whether or not the monster is a valid attacker for trinket at effects."
+    },
+  },
+  tutorial: {
+    ".id": {
+      type: "string",
+      description: "The tutorial which will be shown the first time the monster appears in the save."
+    }
+  },
+  mash_modifier: {
+    ".disable_additional_mash_for_infestation_sequence_on_death": {
+      type: "boolean",
+      description: "If set to true, the monster will not spawn if killed in the current infestation."
     }
   }
 };
