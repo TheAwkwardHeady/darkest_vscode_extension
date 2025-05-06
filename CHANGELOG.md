@@ -1,5 +1,10 @@
 # Change Log
 
+## [0.1.1] - 2025-05-06
+
+### Fixed:
+- Readded missing `.generation_guaranteed` parameter to `combat_skill` keyword.
+
 ## [0.1.0] - 2025-05-04
 Note: The skipped version number (0.0.9) is due to the large size of the update.
 

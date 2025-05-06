@@ -689,6 +689,10 @@ export const GAME_MECHANICS_SCHEMA: {
       type: "string_list",
       description: "Valid mode IDs",
     },
+    ".generation_guaranteed": {
+      type: "boolean",
+      description: "Whether generation is guaranteed",
+    },
     ".ignore_stealth": {
       type: "boolean",
       description: "Whether the skill ignores stealth",
