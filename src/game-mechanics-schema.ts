@@ -2284,5 +2284,11 @@ export const GAME_MECHANICS_SCHEMA: {
       type: "boolean",
       description: "If set to true, the monster will not spawn if killed in the current infestation."
     }
+  },
+  rendering: {
+    ".sort_position_z_rank_override": {
+      type: "number",
+      description: "The display Z axis/level of the actor. Can be used to determine where the actor's clickbox is on the Z axis, in other words, can be used to put the actor's clickbox behind or in front of other actors' making easier to click them."
+    }
   }
 };

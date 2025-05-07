@@ -1,5 +1,14 @@
 # Change Log
 
+## [0.1.2] - 2025-05-07
+
+### Added:
+- Added keyword `rendering` and its parameters to hero/monster file validation.
+
+### Fixed:
+- Fixed the Regex for line validation not accepting anything other than a space between parameters and their values, and between values.
+- `True/False` will now have the correct colouring, like every other value. This was purely a visual bug.
+
 ## [0.1.1] - 2025-05-06
 
 ### Fixed:

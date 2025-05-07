@@ -371,7 +371,7 @@ async function updateDiagnostics(
         continue;
       }
 
-      const isLineValid = /^\w+:(\s+\.[a-zA-Z0-9_]+(\s[^\s.][^\s]*)*)+$/.test(
+      const isLineValid = /^\w+:(\s+\.[a-zA-Z0-9_]+(\s+[^\s.][^\s]*)*)+$/.test(
         lineText
       );
       if (!isLineValid) {
@@ -397,7 +397,7 @@ async function updateDiagnostics(
       }
 
       const paramsAndValues = lineText.match(
-        /(\.[a-zA-Z0-9_]+)(\s[^\s.][^\s]*)*/g
+        /(\.[a-zA-Z0-9_]+)(\s+[^\s.][^\s]*)*/g
       )!;
 
       const missingParams = Object.entries(gameMechanicsSchema[keyword])
@@ -422,7 +422,7 @@ async function updateDiagnostics(
       }
 
       paramsAndValues?.forEach((paramAndValue) => {
-        const [param, ...values] = paramAndValue.split(" ");
+        const [param, ...values] = paramAndValue.split(/\s+/);
         const index = line.text.indexOf(paramAndValue);
         if (!gameMechanicsSchema[keyword][param]) {
           const diagnostic = new vscode.Diagnostic(

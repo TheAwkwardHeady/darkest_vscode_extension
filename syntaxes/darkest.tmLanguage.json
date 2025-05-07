@@ -27,7 +27,7 @@
         },
         {
           "name": "constant.language",
-          "match": "\\b(true|false)\\b"
+          "match": "\\b(true|True|false|False)\\b"
         },
         {
           "name": "comment.line.double-slash",
