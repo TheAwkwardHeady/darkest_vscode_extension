@@ -45,6 +45,18 @@ export function activate(context: vscode.ExtensionContext) {
           type: "string_list",
           description: "Effects IDs for the " + mode + " mode",
         };
+        schema.skill[paramKey] = {
+          type: "string_list",
+          description: "Effects IDs for the " + mode + " mode",
+        };
+        schema.combat_move_skill[paramKey] = {
+          type: "string_list",
+          description: "Effects IDs for the " + mode + " mode",
+        };
+        schema.riposte_skill[paramKey] = {
+          type: "string_list",
+          description: "Effects IDs for the " + mode + " mode",
+        };
       }
       return schema;
     })

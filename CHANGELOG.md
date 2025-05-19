@@ -1,5 +1,10 @@
 # Change Log
 
+## [0.1.3] - 2025-05-19
+
+### Fixed:
+- Added missing `.mode_effects` validation to `.combat_move_skill`, `.riposte_skill` and `.skill` to hero/monster files.
+
 ## [0.1.2] - 2025-05-07
 
 ### Added:
