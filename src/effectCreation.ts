@@ -1,5 +1,10 @@
 import * as vscode from 'vscode';
 
+export function checkIfEffectFile(): boolean {
+  const editor = vscode.window.activeTextEditor;
+  return editor ? editor.document.uri.fsPath.includes("\\effects\\") : false;
+}
+
 const effects: {[key:string]:string} = {
     stun: 'effect: .name "example_stun_1" .target "target" .chance 100% .stun 1 .on_hit true .on_miss false',
     unstun: 'effect: .name "example_unstun_1" .target "target" .chance 100% .unstun 1 .on_hit true .on_miss false',
@@ -39,7 +44,7 @@ const effectParams: {[key:string]:string} = {
     applyOnce: '.apply_once true',
     applyOnDeath: '.can_apply_on_death true',
     AWR:'.apply_with_result true',
-}
+};
 
 export function addEffect(editor: vscode.TextEditor, effectID: string) {
     const position = editor.selection.active;

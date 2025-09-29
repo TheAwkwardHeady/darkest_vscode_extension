@@ -2,7 +2,7 @@
   "name": "darkest",
   "displayName": "Darkest Extension",
   "description": "",
-  "version": "0.1.3",
+  "version": "0.3.0",
   "engines": {
     "vscode": "^1.96.0"
   },
@@ -25,6 +25,16 @@
           ".darkest"
         ],
         "configuration": "./language-configuration.json"
+      },
+      {
+        "id": "xml",
+        "extensions": [".xml"],
+        "aliases": ["XML"]
+      },
+      {
+        "id": "json",
+        "extensions": [".json"],
+        "aliases": ["JSON"]
       }
     ],
     "grammars": [
@@ -35,191 +45,196 @@
       }
     ],
     "commands": [
-      {
-        "command": "darkest.addStun",
-        "title": "Stun",
-        "category": "effectsBase"
-      },
-      {
-        "command": "darkest.addUnstun",
-        "title": "Clear Stun",
-        "category": "effectsBase"
-      },
-      {
-        "command": "darkest.addMark",
-        "title": "Mark",
-        "category": "effectsBase"
-      },
-      {
-        "command": "darkest.addUnmark",
-        "title": "Clear Mark",
-        "category": "effectsBase"
-      },
-      {
-        "command": "darkest.addBleed",
-        "title": "Bleed",
-        "category": "effectsBase"
-      },
-      {
-        "command": "darkest.addBlight",
-        "title": "Blight",
-        "category": "effectsBase"
-      },
-      {
-        "command": "darkest.addCureBleed",
-        "title": "Cure Bleed",
-        "category": "effectsBase"
-      },
-      {
-        "command": "darkest.addCureBlight",
-        "title": "Cure Blight",
-        "category": "effectsBase"
-      },
-      {
-        "command": "darkest.addCureDOTS",
-        "title": "Cure DOTs",
-        "category": "effectsBase"
-      },
-      {
-        "command": "darkest.addHeal",
-        "title": "Heal",
-        "category": "effectsBase"
-      },
-      {
-        "command": "darkest.addRegen",
-        "title": "Regen",
-        "category": "effectsBase"
-      },
-      {
-        "command": "darkest.addStress",
-        "title": "Stress",
-        "category": "effectsBase"
-      },
-      {
-        "command": "darkest.addDestress",
-        "title": "Stress Heal",
-        "category": "effectsBase"
-      },
-      {
-        "command": "darkest.addHorror",
-        "title": "Horror",
-        "category": "effectsBase"
-      },
-      {
-        "command": "darkest.addCureHorror",
-        "title": "Cure Horror",
-        "category": "effectsBase"
-      },
-      {
-        "command": "darkest.addGuard",
-        "title": "Guard",
-        "category": "effectsBase"
-      },
-      {
-        "command": "darkest.addClearGuard",
-        "title": "Clear Guard",
-        "category": "effectsBase"
-      },
-      {
-        "command": "darkest.addBuff1",
-        "title": "Buff/Debuff (buff file based)",
-        "category": "effectsBase"
-      },
-      {
-        "command": "darkest.addBuff2",
-        "title": "Buff/Debuff (effect based)",
-        "category": "effectsBase"
-      },
-      {
-        "command": "darkest.addCureDebuff",
-        "title": "Cure Debuffs",
-        "category": "effectsBase"
-      },
-      {
-        "command": "darkest.addADOT",
-        "title": "ADOT",
-        "category": "effectsBase"
-      },
-      {
-        "command": "darkest.addSetMode",
-        "title": "Set Mode",
-        "category": "effectsBase"
-      },
-      {
-        "command": "darkest.addRiposte",
-        "title": "Riposte",
-        "category": "effectsBase"
-      },
-      {
-        "command": "darkest.addClearRiposte",
-        "title": "Clear Riposte",
-        "category": "effectsBase"
-      },
-      {
-        "command": "darkest.addPush",
-        "title": "Push",
-        "category": "effectsBase"
-      },
-      {
-        "command": "darkest.addPull",
-        "title": "Pull",
-        "category": "effectsBase"
-      },
-      {
-        "command": "darkest.addShuffleTarget",
-        "title": "Shuffle Target",
-        "category": "effectsBase"
-      },
-      {
-        "command": "darkest.addShuffleParty",
-        "title": "Shuffle Party",
-        "category": "effectsBase"
-      },
-      {
-        "command": "darkest.addShuffleDOT",
-        "title": "Stumble/Shuffle DOT",
-        "category": "effectsBase"
-      },
-      {
-        "command": "darkest.addInstant",
-        "title": "Skill Instant",
-        "category": "effectsParams"
-      },
-      {
-        "command": "darkest.addHasDesc",
-        "title": "Has Description",
-        "category": "effectsParams"
-      },
-      {
-        "command": "darkest.addQueue",
-        "title": "Queue",
-        "category": "effectsParams"
-      },
-      {
-        "command": "darkest.addApplyOnce",
-        "title": "Apply Once",
-        "category": "effectsParams"
-      },
-      {
-        "command": "darkest.addApplyOnDeath",
-        "title": "Can Apply On Death",
-        "category": "effectsParams"
-      },
-      {
-        "command": "darkest.addAWR",
-        "title": "Apply With Result",
-        "category": "effectsParams"
-      }
+      { "command": "darkest.addStun", "title": "Stun", "category": "effectsBase" },
+      { "command": "darkest.addUnstun", "title": "Clear Stun", "category": "effectsBase" },
+      { "command": "darkest.addMark", "title": "Mark", "category": "effectsBase" },
+      { "command": "darkest.addUnmark", "title": "Clear Mark", "category": "effectsBase" },
+      { "command": "darkest.addBleed", "title": "Bleed", "category": "effectsBase" },
+      { "command": "darkest.addBlight", "title": "Blight", "category": "effectsBase" },
+      { "command": "darkest.addCureBleed", "title": "Cure Bleed", "category": "effectsBase" },
+      { "command": "darkest.addCureBlight", "title": "Cure Blight", "category": "effectsBase" },
+      { "command": "darkest.addCureDOTS", "title": "Cure DOTs", "category": "effectsBase" },
+      { "command": "darkest.addHeal", "title": "Heal", "category": "effectsBase" },
+      { "command": "darkest.addRegen", "title": "Regen", "category": "effectsBase" },
+      { "command": "darkest.addStress", "title": "Stress", "category": "effectsBase" },
+      { "command": "darkest.addDestress", "title": "Stress Heal", "category": "effectsBase" },
+      { "command": "darkest.addHorror", "title": "Horror", "category": "effectsBase" },
+      { "command": "darkest.addCureHorror", "title": "Cure Horror", "category": "effectsBase" },
+      { "command": "darkest.addGuard", "title": "Guard", "category": "effectsBase" },
+      { "command": "darkest.addClearGuard", "title": "Clear Guard", "category": "effectsBase" },
+      { "command": "darkest.addBuff1", "title": "Buff/Debuff (buff file based)", "category": "effectsBase" },
+      { "command": "darkest.addBuff2", "title": "Buff/Debuff (effect based)", "category": "effectsBase" },
+      { "command": "darkest.addCureDebuff", "title": "Cure Debuffs", "category": "effectsBase" },
+      { "command": "darkest.addADOT", "title": "ADOT", "category": "effectsBase" },
+      { "command": "darkest.addSetMode", "title": "Set Mode", "category": "effectsBase" },
+      { "command": "darkest.addRiposte", "title": "Riposte", "category": "effectsBase" },
+      { "command": "darkest.addClearRiposte", "title": "Clear Riposte", "category": "effectsBase" },
+      { "command": "darkest.addPush", "title": "Push", "category": "effectsBase" },
+      { "command": "darkest.addPull", "title": "Pull", "category": "effectsBase" },
+      { "command": "darkest.addShuffleTarget", "title": "Shuffle Target", "category": "effectsBase" },
+      { "command": "darkest.addShuffleParty", "title": "Shuffle Party", "category": "effectsBase" },
+      { "command": "darkest.addShuffleDOT", "title": "Stumble/Shuffle DOT", "category": "effectsBase" },
+
+      { "command": "darkest.addInstant", "title": "Skill Instant", "category": "effectsParams" },
+      { "command": "darkest.addHasDesc", "title": "Has Description", "category": "effectsParams" },
+      { "command": "darkest.addQueue", "title": "Queue", "category": "effectsParams" },
+      { "command": "darkest.addApplyOnce", "title": "Apply Once", "category": "effectsParams" },
+      { "command": "darkest.addApplyOnDeath", "title": "Can Apply On Death", "category": "effectsParams" },
+      { "command": "darkest.addAWR", "title": "Apply With Result", "category": "effectsParams" },
+
+      { "command": "darkest.adjustZWSP", "title": "Adjust the number of ZWSPs" },
+      { "command": "darkest.createZWSP", "title": "Add any number of ZWSPs" },
+      { "command": "darkest.createTooltipString", "title": "Create a Custom Tooltip String" },
+      { "command": "darkest.createTooltipBuff", "title": "Create a Custom Tooltip Buff" },
+
+      { "command": "darkest.createFlatHealBuff", "title": "Flat Healing Done", "category": "buffs" },
+      { "command": "darkest.createPercentHealBuff", "title": "Percentage Healing Done", "category": "buffs" },
+      { "command": "darkest.createHealRecBuff", "title": "Percentage Healing Received", "category": "buffs" },
+      { "command": "darkest.createRegenDurBuff", "title": "Regen Duration Applied", "category": "buffs" },
+      { "command": "darkest.createRegenDurRecBuff", "title": "Regen Duration Received", "category": "buffs" },
+      { "command": "darkest.createRegenAmountBuff", "title": "Regen Amount Applied", "category": "buffs" },
+      { "command": "darkest.createRegenAmountRecBuff", "title": "Regen Amount Received", "category": "buffs" },
+      { "command": "darkest.createRegenAsBuff", "title": "Regen as a buff", "category": "buffs" },
+
+      { "command": "darkest.createFlatMaxHPBuff", "title": "Flat Max HP", "category": "buffs" },
+      { "command": "darkest.createFlatMinDMGBuff", "title": "Flat Min DMG", "category": "buffs" },
+      { "command": "darkest.createFlatMaxDMGBuff", "title": "Flat Max DMG", "category": "buffs" },
+      { "command": "darkest.createFlatACCBuff", "title": "Flat ACC", "category": "buffs" },
+      { "command": "darkest.createFlatCRITBuff", "title": "Flat CRIT", "category": "buffs" },
+      { "command": "darkest.createFlatDodgeBuff", "title": "Flat Dodge", "category": "buffs" },
+      { "command": "darkest.createFlatPROTBuff", "title": "Flat PROT", "category": "buffs" },
+      { "command": "darkest.createFlatSPDBuff", "title": "Flat Speed", "category": "buffs" },
+      { "command": "darkest.createRiposteOnHitBuff", "title": "Riposte when hit chance", "category": "buffs" },
+      { "command": "darkest.createRiposteOnMissBuff", "title": "Riposte when missed chance", "category": "buffs" },
+      { "command": "darkest.createMaxHPMultBuff", "title": "Max HP Multiplier", "category": "buffs" },
+      { "command": "darkest.createMinDMGMultBuff", "title": "Min DMG Multiplier", "category": "buffs" },
+      { "command": "darkest.createMaxDMGMultBuff", "title": "Max DMG Multiplier", "category": "buffs" },
+      { "command": "darkest.createACCMultBuff", "title": "ACC Multiplier", "category": "buffs" },
+      { "command": "darkest.createCRITMultBuff", "title": "CRIT Multiplier", "category": "buffs" },
+      { "command": "darkest.createDodgeMultBuff", "title": "Dodge Multiplier", "category": "buffs" },
+      { "command": "darkest.createPROTMultBuff", "title": "PROT Multiplier", "category": "buffs" },
+      { "command": "darkest.createSPDMultBuff", "title": "Speed Multiplier", "category": "buffs" },
+
+      { "command": "darkest.createStunResBuff", "title": "Stun Resistance", "category": "buffs" },
+      { "command": "darkest.createMoveResBuff", "title": "Move Resistance", "category": "buffs" },
+      { "command": "darkest.createBlightResBuff", "title": "Blight Resistance", "category": "buffs" },
+      { "command": "darkest.createBleedResBuff", "title": "Bleed Resistance", "category": "buffs" },
+      { "command": "darkest.createDiseaseResBuff", "title": "Disease Resistance", "category": "buffs" },
+      { "command": "darkest.createDebuffResBuff", "title": "Debuff Resistance", "category": "buffs" },
+      { "command": "darkest.createDeathBlowResBuff", "title": "Death Blow Resistance", "category": "buffs" },
+      { "command": "darkest.createTrapResBuff", "title": "Trap Resistance", "category": "buffs" },
+
+      { "command": "darkest.createStunChanceBuff", "title": "Stun Chance", "category": "buffs" },
+      { "command": "darkest.createMoveChanceBuff", "title": "Move Chance", "category": "buffs" },
+      { "command": "darkest.createPoisonChanceBuff", "title": "Blight Chance", "category": "buffs" },
+      { "command": "darkest.createBleedChanceBuff", "title": "Bleed Chance", "category": "buffs" },
+      { "command": "darkest.createDebuffChanceBuff", "title": "Debuff Chance", "category": "buffs" },
+      { "command": "darkest.createDeathBlowChanceBuff", "title": "Death Blow Chance", "category": "buffs" },
+
+      { "command": "darkest.createStressBuff", "title": "Stress Done", "category": "buffs" },
+      { "command": "darkest.createStressRecBuff", "title": "Stress Received", "category": "buffs" },
+      { "command": "darkest.createStressOnMissBuff", "title": "Stress On Miss", "category": "buffs" },
+      { "command": "darkest.createHorrorDurBuff", "title": "Horror Duration Applied", "category": "buffs" },
+      { "command": "darkest.createHorrorDurRecBuff", "title": "Horror Duration Received", "category": "buffs" },
+      { "command": "darkest.createHorrorAmountBuff", "title": "Horror Amount Applied", "category": "buffs" },
+      { "command": "darkest.createHorrorAmountRecBuff", "title": "Horror Amount Received", "category": "buffs" },
+      { "command": "darkest.createHorrorAsBuff", "title": "Horror as a buff", "category": "buffs" },
+
+      { "command": "darkest.createDisableHealBuff", "title": "Disable Healing Skills", "category": "buffs" },
+      { "command": "darkest.createDisableBuffBuff", "title": "Disable Buff Skills", "category": "buffs" },
+      { "command": "darkest.createDisableDebuffBuff", "title": "Disable Debuff Skills", "category": "buffs" },
+      { "command": "darkest.createDisableBleedBuff", "title": "Disable Bleed Skills", "category": "buffs" },
+      { "command": "darkest.createDisableBlightBuff", "title": "Disable Blight Skills", "category": "buffs" },
+      { "command": "darkest.createDisableStunBuff", "title": "Disable Stun Skills", "category": "buffs" },
+      { "command": "darkest.createDisableTagBuff", "title": "Disable Mark Skills", "category": "buffs" },
+      { "command": "darkest.createDisableStressBuff", "title": "Disable Stress Skills", "category": "buffs" },
+      { "command": "darkest.createDisableMoveBuff", "title": "Disable Move Skills", "category": "buffs" },
+      { "command": "darkest.createDisableGuardBuff", "title": "Disable Guard Skills", "category": "buffs" },
+      { "command": "darkest.createDisableDazeBuff", "title": "Disable Daze Skills", "category": "buffs" },
+
+      { "command": "darkest.createBleedDurBuff", "title": "Bleed Duration Applied", "category": "buffs" },
+      { "command": "darkest.createBleedDurRecBuff", "title": "Bleed Duration Received", "category": "buffs" },
+      { "command": "darkest.createBleedAmountBuff", "title": "Bleed Amount Applied", "category": "buffs" },
+      { "command": "darkest.createBleedAmountRecBuff", "title": "Bleed Amount Received", "category": "buffs" },
+      { "command": "darkest.createBleedAsBuff", "title": "Bleed as a buff", "category": "buffs" },
+      { "command": "darkest.createBleedCureChanceBuff", "title": "Bleed Cure Chance", "category": "buffs" },
+      { "command": "darkest.createBleedCureRecChanceBuff", "title": "Bleed Cure Received Chance", "category": "buffs" },
+      { "command": "darkest.createBlightDurBuff", "title": "Blight Duration Applied", "category": "buffs" },
+      { "command": "darkest.createBlightDurRecBuff", "title": "Blight Duration Received", "category": "buffs" },
+      { "command": "darkest.createBlightAmountBuff", "title": "Blight Amount Applied", "category": "buffs" },
+      { "command": "darkest.createBlightAmountRecBuff", "title": "Blight Amount Received", "category": "buffs" },
+      { "command": "darkest.createBlightAsBuff", "title": "Blight as a buff", "category": "buffs" },
+      { "command": "darkest.createBlightCureChanceBuff", "title": "Blight Duration Applied", "category": "buffs" },
+      { "command": "darkest.createBlightCureRecChanceBuff", "title": "Blight Duration Applied", "category": "buffs" },
+
+      { "command": "darkest.createStumbleDurBuff", "title": "Stumble Duration Applied", "category": "buffs" },
+      { "command": "darkest.createStumbleDurRecBuff", "title": "Stumble Duration Received", "category": "buffs" },
+      { "command": "darkest.createStumbleAsBuff", "title": "Stumble as a buff", "category": "buffs" },
+
+      { "command": "darkest.createShardsGainedBuff", "title": "Shards Gained", "category": "buffs" },
+      { "command": "darkest.createShardsUsedBuff", "title": "Shards Consumed", "category": "buffs" },
+
+      { "command": "darkest.createStressHealBuff", "title": "Stress Healing Done", "category": "buffs" },
+      { "command": "darkest.createStressHealRecBuff", "title": "Stress Healing Received", "category": "buffs" },
+      { "command": "darkest.createStressHealOnHeartAttackBuff", "title": "Stress Healing from Heart Attack", "category": "buffs" },
+
+      { "command": "darkest.createGuardDurBuff", "title": "Guard Duration Applied", "category": "buffs" },
+      { "command": "darkest.createGuardDurRecBuff", "title": "Guard Duration Received", "category": "buffs" },
+
+      { "command": "darkest.createPreventGuardBuff", "title": "Can't be Guarded", "category": "buffs" },
+      { "command": "darkest.createPreventTagBuff", "title": "Can't be Marked", "category": "buffs" },
+
+      { "command": "darkest.createIgnoreGuardBuff", "title": "Ignore Guard", "category": "buffs" },
+      { "command": "darkest.createIgnoreProtBuff", "title": "Ignore PROT", "category": "buffs" },
+      { "command": "darkest.createIgnoreStealthBuff", "title": "Ignore Stealth", "category": "buffs" },
+      
+      { "command": "darkest.createActivitySideEffectBuff", "title": "Hamlet Activity Side Effect Chance", "category": "buffs" },
+      { "command": "darkest.createStressPerWeekBuff", "title": "Stress while Idle in Hamlet", "category": "buffs" },
+
+      { "command": "darkest.createHeroSurpriseBuff", "title": "Heros Surprise Chance", "category": "buffs" },
+      { "command": "darkest.createMonsterSurpriseBuff", "title": "Monsters Surprise Chance", "category": "buffs" },
+      { "command": "darkest.createCampAmbushBuff", "title": "Ambush Chance", "category": "buffs" },
+      { "command": "darkest.createScountingBuff", "title": "Scount Chance", "category": "buffs" },
+      { "command": "darkest.createStarvingBuff", "title": "Starvation DMG", "category": "buffs" },
+      { "command": "darkest.createEatingBuff", "title": "Healing from Food", "category": "buffs" },
+      { "command": "darkest.createCurioQuirkRemoveBuff", "title": "Remove Negative Quirk Chance", "category": "buffs" },
+      { "command": "darkest.createXPBuff", "title": "Experience Received", "category": "buffs" },
+
+      { "command": "darkest.createDMGRecBuff", "title": "DMG Received", "category": "buffs" },
+      { "command": "darkest.createCRITRecBuff", "title": "CRIT Received", "category": "buffs" },
+      { "command": "darkest.createVirtueBuff", "title": "Virtue Chance", "category": "buffs" },
+      { "command": "darkest.createThirstEvoDurBuff", "title": "Vampire Evolution Duration", "category": "buffs" },
+      { "command": "darkest.createQuirkEvoDurBuff", "title": "Quirk Evolution Duration", "category": "buffs" },
+      { "command": "darkest.createQuirkDeathImmuneBuff", "title": "Immune to Death from Quirk Evolution", "category": "buffs" },
+      { "command": "darkest.createTorchGainBuff", "title": "Torch Increase", "category": "buffs" },
+      { "command": "darkest.createTorchLossBuff", "title": "Torch Decrease", "category": "buffs" },
+      { "command": "darkest.createTorchBurnBuff", "title": "Torch Burn Rate", "category": "buffs" },
+      { "command": "darkest.createDMGReflectBuff", "title": "DMG Reflect", "category": "buffs" },
+      { "command": "darkest.createRandomTargetFriendlyBuff", "title": "Random Friendly Target Chance", "category": "buffs" },
+      { "command": "darkest.createRandomTargetAttackBuff", "title": "Random Attack Target Chance", "category": "buffs" },
+      { "command": "darkest.createRiposteDurBuff", "title": "Riposte Duration", "category": "buffs" },
+      { "command": "darkest.createBuffDurBuff", "title": "Buff Duration", "category": "buffs" }
     ],
     "submenus": [
-      {
-        "id": "darkest.baseEffects",
-        "label": "Add Base Effect"
-      },
-      {
-        "id": "darkest.effectParams",
-        "label": "Add Effect Parameters"
-      }
+      { "id": "darkest.baseEffects", "label": "Add Base Effect" },
+      { "id": "darkest.effectParams", "label": "Add Effect Parameters" },
+      { "id": "darkest.locTools", "label": "Localization Tools" },
+      { "id": "darkest.buffTools", "label": "Buff Tools" },
+      { "id": "darkest.healBuffs", "label": "Healing / Regen Buffs" },
+      { "id": "darkest.combatBuffs", "label": "Combat Stat Buffs" },
+      { "id": "darkest.resBuffs", "label": "Resistance Buffs" },
+      { "id": "darkest.stressBuffs", "label": "Stress / Horror Buffs" },
+      { "id": "darkest.disableBuffs", "label": "Disable Buffs" },
+      { "id": "darkest.dotBuffs", "label": "DOT Buffs" },
+      { "id": "darkest.stumbleBuffs", "label": "Stubmle Buffs" },
+      { "id": "darkest.shardBuffs", "label": "Shard Buffs" },
+      { "id": "darkest.stressHealBuffs", "label": "Stress Heal Buffs" },
+      { "id": "darkest.guardBuffs", "label": "Guard Buffs" },
+      { "id": "darkest.blockBuffs", "label": "Status Prevention Buffs" },
+      { "id": "darkest.ignoreBuffs", "label": "Status Ignore Buffs" },
+      { "id": "darkest.hamletBuffs", "label": "Hamlet Buffs" },
+      { "id": "darkest.exploreBuffs", "label": "Dungeon Exploration Buffs" },
+      { "id": "darkest.miscBuffs", "label": "Misc. Buffs" }
     ],
     "menus": {
       "editor/context": [
@@ -232,6 +247,16 @@
           "submenu": "darkest.effectParams",
           "when": "editorTextFocus && editorLangId == darkest",
           "group": "effectsGroup"
+        },
+        {
+          "submenu": "darkest.locTools",
+          "when": "editorTextFocus && editorLangId == xml",
+          "group": "xmlGroup"
+        },
+        {
+          "submenu": "darkest.buffTools",
+          "when": "editorTextFocus && editorLangId == json",
+          "group": "buffGroup"
         }
       ],
       "darkest.baseEffects": [
@@ -412,6 +437,183 @@
           "when": "editorTextFocus && editorLangId == darkest",
           "group": "effectsGroup"
         }
+      ],
+
+      "darkest.locTools": [
+        {
+          "command": "darkest.createZWSP",
+          "when": "editorTextFocus && editorLangId == xml",
+          "group": "locGroup"
+        },
+        {
+          "command": "darkest.createTooltipString",
+          "when": "editorTextFocus && editorLangId == xml",
+          "group": "locGroup"
+        }
+      ],
+
+      "darkest.buffTools": [
+        {"command": "darkest.createTooltipBuff"},
+        {"submenu": "darkest.healBuffs"},
+        {"submenu": "darkest.combatBuffs"},
+        {"submenu": "darkest.resBuffs"},
+        {"submenu": "darkest.skillBuffs"},
+        {"submenu": "darkest.stressBuffs"},
+        {"submenu": "darkest.disableBuffs"},
+        {"submenu": "darkest.dotBuffs"},
+        {"submenu": "darkest.stumbleBuffs"},
+        {"submenu": "darkest.shardBuffs"},
+        {"submenu": "darkest.stressHealBuffs"},
+        {"submenu": "darkest.guardBuffs"},
+        {"submenu": "darkest.blockBuffs"},
+        {"submenu": "darkest.ignoreBuffs"},
+        {"submenu": "darkest.hamletBuffs"},
+        {"submenu": "darkest.exploreBuffs"},
+        {"submenu": "darkest.miscBuffs"}
+      ],
+      "darkest.healBuffs": [
+        {"command": "darkest.createFlatHealBuff"},
+        {"command": "darkest.createPercentHealBuff"},
+        {"command": "darkest.createHealRecBuff"},
+        {"command": "darkest.createRegenDurBuff"},
+        {"command": "darkest.createRegenDurRecBuff"},
+        {"command": "darkest.createRegenAmountBuff"},
+        {"command": "darkest.createRegenAmountRecBuff"},
+        {"command": "darkest.createRegenAsBuff"}
+      ],
+      "darkest.combatBuffs": [
+        {"command": "darkest.createFlatMaxHPBuff"},
+        {"command": "darkest.createFlatMinDMGBuff"},
+        {"command": "darkest.createFlatMaxDMGBuff"},
+        {"command": "darkest.createFlatACCBuff"},
+        {"command": "darkest.createFlatCRITBuff"},
+        {"command": "darkest.createFlatDodgeBuff"},
+        {"command": "darkest.createFlatPROTBuff"},
+        {"command": "darkest.createFlatSPDBuff"},
+        {"command": "darkest.createRiposteOnHitBuff"},
+        {"command": "darkest.createRiposteOnMissBuff"},
+        {"command": "darkest.createMaxHPMultBuff"},
+        {"command": "darkest.createMinDMGMultBuff"},
+        {"command": "darkest.createMaxDMGMultBuff"},
+        {"command": "darkest.createACCMultBuff"},
+        {"command": "darkest.createCRITMultBuff"},
+        {"command": "darkest.createDodgeMultBuff"},
+        {"command": "darkest.createPROTMultBuff"},
+        {"command": "darkest.createSPDMultBuff"}
+      ],
+      "darkest.resBuffs": [
+        {"command": "darkest.createStunResBuff"},
+        {"command": "darkest.createMoveResBuff"},
+        {"command": "darkest.createBlightResBuff"},
+        {"command": "darkest.createBleedResBuff"},
+        {"command": "darkest.createDiseaseResBuff"},
+        {"command": "darkest.createDebuffResBuff"},
+        {"command": "darkest.createDeathBlowResBuff"},
+        {"command": "darkest.createTrapResBuff"}
+      ],
+      "darkest.skillBuffs": [
+        {"command": "darkest.createStunChanceBuff"},
+        {"command": "darkest.createMoveChanceBuff"},
+        {"command": "darkest.createPoisonChanceBuff"},
+        {"command": "darkest.createBleedChanceBuff"},
+        {"command": "darkest.createDebuffChanceBuff"},
+        {"command": "darkest.createDeathBlowChanceBuff"}
+      ],
+      "darkest.stressBuffs": [
+        {"command": "darkest.createStressBuff"},
+        {"command": "darkest.createStressRecBuff"},
+        {"command": "darkest.createStressOnMissBuff"},
+        {"command": "darkest.createHorrorDurBuff"},
+        {"command": "darkest.createHorrorDurRecBuff"},
+        {"command": "darkest.createHorrorAmountBuff"},
+        {"command": "darkest.createHorrorAmountRecBuff"},
+        {"command": "darkest.createHorrorAsBuff"}
+      ],
+      "darkest.disableBuffs": [
+        {"command": "darkest.createDisableHealBuff"},
+        {"command": "darkest.createDisableBuffBuff"},
+        {"command": "darkest.createDisableDebuffBuff"},
+        {"command": "darkest.createDisableBleedBuff"},
+        {"command": "darkest.createDisableBlightBuff"},
+        {"command": "darkest.createDisableStunBuff"},
+        {"command": "darkest.createDisableTagBuff"},
+        {"command": "darkest.createDisableStressBuff"},
+        {"command": "darkest.createDisableMoveBuff"},
+        {"command": "darkest.createDisableGuardBuff"},
+        {"command": "darkest.createDisableDazeBuff"}
+      ],
+      "darkest.dotBuffs": [
+        {"command": "darkest.createBleedDurBuff"},
+        {"command": "darkest.createBleedDurRecBuff"},
+        {"command": "darkest.createBleedAmountBuff"},
+        {"command": "darkest.createBleedAmountRecBuff"},
+        {"command": "darkest.createBleedAsBuff"},
+        {"command": "darkest.createBleedCureChanceBuff"},
+        {"command": "darkest.createBleedCureRecChanceBuff"},
+        {"command": "darkest.createBlightDurBuff"},
+        {"command": "darkest.createBlightDurRecBuff"},
+        {"command": "darkest.createBlightAmountBuff"},
+        {"command": "darkest.createBlightAmountRecBuff"},
+        {"command": "darkest.createBlightAsBuff"},
+        {"command": "darkest.createBlightCureChanceBuff"},
+        {"command": "darkest.createBlightCureRecChanceBuff"}
+      ],
+      "darkest.stumbleBuffs": [
+        {"command": "darkest.createStumbleDurBuff"},
+        {"command": "darkest.createStumbleDurRecBuff"},
+        {"command": "darkest.createStumbleAsBuff"}
+      ],
+      "darkest.shardBuffs": [
+        {"command": "darkest.createShardsGainedBuff"},
+        {"command": "darkest.createShardsUsedBuff"}
+      ],
+      "darkest.stressHealBuffs": [
+        {"command": "darkest.createStressHealBuff"},
+        {"command": "darkest.createStressHealRecBuff"},
+        {"command": "darkest.createStressHealOnHeartAttackBuff"}
+      ],
+      "darkest.guardBuffs": [
+        {"command": "darkest.createGuardDurBuff"},
+        {"command": "darkest.createGuardDurRecBuff"}
+      ],
+      "darkest.blockBuffs": [
+        {"command": "darkest.createPreventGuardBuff"},
+        {"command": "darkest.createPreventTagBuff"}
+      ],
+      "darkest.ignoreBuffs": [
+        {"command": "darkest.createIgnoreGuardBuff"},
+        {"command": "darkest.createIgnoreProtBuff"},
+        {"command": "darkest.createIgnoreStealthBuff"}
+      ],
+      "darkest.hamletBuffs": [
+        {"command": "darkest.createActivitySideEffectBuff"},
+        {"command": "darkest.createStressPerWeekBuff"}
+      ],
+      "darkest.exploreBuffs": [
+        {"command": "darkest.createHeroSurpriseBuff"},
+        {"command": "darkest.createMonsterSurpriseBuff"},
+        {"command": "darkest.createCampAmbushBuff"},
+        {"command": "darkest.createScountingBuff"},
+        {"command": "darkest.createStarvingBuff"},
+        {"command": "darkest.createEatingBuff"},
+        {"command": "darkest.createCurioQuirkRemoveBuff"},
+        {"command": "darkest.createXPBuff"}
+      ],
+      "darkest.miscBuffs": [
+        {"command": "darkest.createDMGRecBuff"},
+        {"command": "darkest.createCRITRecBuff"},
+        {"command": "darkest.createVirtueBuff"},
+        {"command": "darkest.createThirstEvoDurBuff"},
+        {"command": "darkest.createQuirkEvoDurBuff"},
+        {"command": "darkest.createQuirkDeathImmuneBuff"},
+        {"command": "darkest.createTorchGainBuff"},
+        {"command": "darkest.createTorchLossBuff"},
+        {"command": "darkest.createTorchBurnBuff"},
+        {"command": "darkest.createDMGReflectBuff"},
+        {"command": "darkest.createRandomTargetFriendlyBuff"},
+        {"command": "darkest.createRandomTargetAttackBuff"},
+        {"command": "darkest.createRiposteDurBuff"},
+        {"command": "darkest.createBuffDurBuff"}
       ]
     }
   },

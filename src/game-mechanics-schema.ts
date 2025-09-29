@@ -5,6 +5,73 @@ type Schema = {
   allowed_values?: string[] | number[] | boolean[];
   required?: boolean;
   canBeNull?: boolean;
+  vanillaValuesTitle?: string;
+  vanillaValues?: string[];
+  addInfo?: string;
+  displayEffectOrder?: boolean;
+  commonName?: string
+  referenceDesc?: string,
+  sourceList?: string
+};
+
+export const Sources:{
+  [key: string]: {
+    title: string,
+    list: string[]
+    comments?: {
+      [key: string]: string
+    }
+  };
+} = {
+  buff: {
+    title: "Refer to the document below by Sasiji for detailed information on each Buff Source",
+    list: [
+      "https://docs.google.com/spreadsheets/d/1KvN2vYP6_4kw0SmRKEmrN_BRAQGPQ5mKB28xcb4HM7s"
+    ]
+  },
+  heal: {
+    title: "Heal Sources (CRIT chance)",
+    list: [
+      "hero_skill",
+      "hero_skill_multi_target",
+      "monster_skill",
+      "monster_skill_multi_target",
+      "camp_skill",
+      "camp_skill_multi_target",
+      "companion",
+      "eat",
+      "act_out",
+      "damage_heal",
+      "effect",
+      "flashback",
+      "dot",
+      "curio",
+    ],
+    comments: {
+      hero_skill: "12%",
+      hero_skill_multi_target: "5%",
+      monster_skill: "2.5%",
+      monster_skill_multi_target: "2.5%",
+      camp_skill: "0%",
+      camp_skill_multi_target: "0%",
+      companion: "0%",
+      eat: "0%",
+      act_out: "0%",
+      damage_heal: "0%",
+      effect: "12%",
+      flashback: "0%",
+      dot: "6%",
+      curio: "0%",
+    },
+  },
+  stress: {
+    title: "",
+    list: []
+  },
+  DMG: {
+    title: "",
+    list: []
+  }
 };
 
 export const GAME_MECHANICS_SCHEMA: {
@@ -15,7 +82,7 @@ export const GAME_MECHANICS_SCHEMA: {
   effect: {
     ".name": {
       type: "string",
-      description: "The unique identifier for the effect.",
+      description: "The effect's ID.",
     },
     ".target": {
       type: "string",
@@ -29,44 +96,62 @@ export const GAME_MECHANICS_SCHEMA: {
         "target_enemy_group",
         "global",
       ],
-      description: "Specifies the target of the effect.",
+      description: "The target of the effect.",
     },
     ".curio_result_type": {
       type: "string",
       allowed_values: ["positive", "negative", "neutral", "none"],
-      description: "The result type for curio interactions.",
+      description: "The result type for curio interactions. This decides what colour of light the curio will emit on interaction. Positive: White, Negative: Red, None: No light.",
     },
     ".chance": {
       type: "number",
-      description: "The probability of the effect occurring.",
+      description: "The effect's base chance.",
+      addInfo: "If not present on the effect, will default to 100%."
     },
     ".on_hit": {
       type: "boolean",
-      description: "Indicates if the effect triggers on a hit.",
+      description: "Whether or not the effect triggers when the skill hits.",
     },
     ".on_miss": {
       type: "boolean",
-      description: "Indicates if the effect triggers on a miss.",
+      description: "Whether or not the effect triggers when the skill misses.",
     },
     ".queue": {
       type: "boolean",
-      description: "Indicates if the effect should be queued.",
+      description: "Whether or not the effect is queued.",
+      displayEffectOrder: true
     },
     ".dotBleed": {
       type: "number",
-      description: "The bleed damage over time value.",
+      commonName: "Bleed",
+      description: "The amount of Bleed DOT applied by the effect.",
     },
     ".dotPoison": {
       type: "number",
-      description: "The poison damage over time value.",
+      commonName: "Blight",
+      description: "The amount of Blight DOT applied by the effect.",
     },
     ".dotStress": {
       type: "number",
-      description: "The stress damage over time value.",
+      commonName: "Horror",
+      description: "The Amount of Horror applied by the effect. Works like Bleed/Blight, but does Stress DMG instead.",
+      addInfo: "There is no Resistance stat for it."
+    },
+    ".hp_dot_bleed": {
+      type: "number",
+      referenceDesc: ".dotBleed"
+    },
+    ".hp_dot_poison": {
+      type: "number",
+      referenceDesc: ".dotPoison"
+    },
+    ".stress_dot": {
+      type: "number",
+      referenceDesc: ".dotStress"
     },
     ".stress": {
       type: "number",
-      description: "The stress value applied by the effect.",
+      description: "The Stress DMG amount applied by the effect.",
     },
     ".healstress": {
       type: "number",
@@ -75,51 +160,118 @@ export const GAME_MECHANICS_SCHEMA: {
     ".combat_stat_buff": {
       type: "boolean",
       allowed_values: [1, 0],
-      description: "Indicates if the effect applies a combat stat buff.",
+      description: "Effect based buff. Applies if 1.",
+      addInfo: "Can work as a `.skill_instant true` effect without actually using it."
+    },
+    ".damage_low_add": {
+      type: "number",
+      description: "Minimum Flat DMG amount. Used by `.combat_stat_buff`.",
     },
     ".damage_low_multiply": {
       type: "number",
-      description: "Multiplier for the lower bound of damage.",
+      description: "Minimum DMG multiplier amount. Used by `.combat_stat_buff`.",
+    },
+    ".damage_high_add": {
+      type: "number",
+      description: "Maximum Flat DMG amount. Used by `.combat_stat_buff`.",
     },
     ".damage_high_multiply": {
       type: "number",
-      description: "Multiplier for the upper bound of damage.",
+      description: "Maximum DMG multiplier amount. Used by `.combat_stat_buff`.",
+    },
+    ".max_hp_add": {
+      type: "number",
+      description: "Flat Max HP amount. Used by `.combat_stat_buff`.",
     },
     ".max_hp_multiply": {
       type: "number",
-      description: "Multiplier for maximum HP.",
+      description: "Max HP Multiplier amount. Used by `.combat_stat_buff`.",
     },
     ".attack_rating_add": {
       type: "number",
-      description: "Value added to the attack rating.",
+      description: "Flat Accuracy amount. Used by `.combat_stat_buff`.",
+    },
+    ".attack_rating_multiply": {
+      type: "number",
+      description: "Accuracy Multiplier amount. Used by `.combat_stat_buff`.",
     },
     ".crit_chance_add": {
       type: "number",
-      description: "Value added to the critical hit chance.",
+      description: "Flat CRIT chance amount. Used by `.combat_stat_buff`.",
+    },
+    ".crit_chance_multiply": {
+      type: "number",
+      description: "CRIT chance multiplier amount. Used by `.combat_stat_buff`.",
     },
     ".defense_rating_add": {
       type: "number",
-      description: "Value added to the defense rating.",
+      description: "Flat Dodge amount. Used by `.combat_stat_buff`.",
+    },
+    ".defense_rating_multiply": {
+      type: "number",
+      description: "Dodge multiplier amount. Used by `.combat_stat_buff`.",
     },
     ".protection_rating_add": {
       type: "number",
-      description: "Value added to the protection rating.",
+      description: "Flat PROT amount. Used by `.combat_stat_buff`.",
+    },
+    ".protection_rating_multiply": {
+      type: "number",
+      description: "PROT multiplier amount. Used by `.combat_stat_buff`.",
     },
     ".speed_rating_add": {
       type: "number",
-      description: "Value added to the speed rating.",
+      description: "Flat Speed amount. Used by `.combat_stat_buff`.",
+    },
+    ".speed_rating_multiply": {
+      type: "number",
+      description: "Speed multiplier amount. Used by `.combat_stat_buff`.",
+    },
+    ".keyStatus": {
+      type: "string",
+      description: "The status effect checked on the skill's target by `.combat_stat_buff`.",
+      vanillaValuesTitle: "Vanilla Statuses",
+      vanillaValues: [
+        "tagged",
+        "poisoned",
+        "bleeding",
+        "stunned",
+        "virtued",
+        "afflicted",
+      ],
+    },
+    ".buff_amount": {
+      type: "number",
+      description: "Used to make effect based buffs. Determines the buff's amount.",
+    },
+    ".buff_type": {
+      type: "string",
+      description: "Used to make effect based buffs. Determines the buff's type.",
+    },
+    ".buff_sub_type": {
+      type: "string",
+      description: "Used to make effect based buffs. Determines the buff's sub type.",
+    },
+    ".buff_duration_type": {
+      type: "string",
+      description: "Determins the duration type of the buff. Used together with `.buff_type` or `.buff_ids`",
     },
     ".buff_ids": {
       type: "string_list",
-      description: "List of buff IDs applied by the effect.",
+      description: "List of buffs applied by the effect.",
     },
     ".duration": {
       type: "number",
-      description: "Duration of the effect in turns.",
+      description: "The effect's duration. Turn based by default.",
     },
     ".dotHpHeal": {
       type: "number",
-      description: "Healing over time value for HP.",
+      description: "The Regen amount applied by the skill. Works like DOTs, but heals HP rather than dealing DMG.",
+      commonName: "Regen/Regeneration"
+    },
+    ".hp_dot_heal": {
+      type: "number",
+      referenceDesc: ".dotHpHeal"
     },
     ".heal": {
       type: "number",
@@ -127,339 +279,366 @@ export const GAME_MECHANICS_SCHEMA: {
     },
     ".heal_percent": {
       type: "number",
-      description: "Percentage of HP healed by the effect.",
+      description: "Percentage based healing. Heals the target for the given percentage of their Max HP. (ex. `.heal_percent 0.4` will heal 40% of the target's Max HP's worth of HP.)",
     },
     ".can_crit_heal": {
       type: "boolean",
-      description: "Indicates if the heal can critically strike.",
+      description: "Whether or not the heal effect can CRIT.",
     },
     ".cure": {
       type: "boolean",
       allowed_values: [1, 0],
-      description: "Indicates if the effect cures a condition.",
+      description: "Cures the target of Bleed and Blight.",
     },
     ".cure_bleed": {
       type: "boolean",
       allowed_values: [1, 0],
-      description: "Indicates if the effect cures bleeding.",
+      description: "Cures the target of Bleed.",
     },
     ".cure_poison": {
       type: "boolean",
       allowed_values: [1, 0],
-      description: "Indicates if the effect cures poison.",
+      description: "Cures the target of Blight.",
     },
     ".clearDotStress": {
       type: "boolean",
       allowed_values: [1, 0],
-      description: "Indicates if the effect clears stress damage over time.",
+      description: "Cures the target of Horror.",
     },
     ".tag": {
       type: "boolean",
       allowed_values: [1, 0],
-      description: "Indicates if the effect applies a tag.",
+      description: "Marks the target.",
     },
     ".untag": {
       type: "boolean",
       allowed_values: [1, 0],
-      description: "Indicates if the effect removes a tag.",
+      description: "Clears Marks from the target.",
     },
     ".stun": {
       type: "number",
-      description: "The stun value applied by the effect.",
+      description: "The amount of turns the target will get stunned for. Unaffected by `.duration`.",
     },
     ".unstun": {
       type: "boolean",
       allowed_values: [1, 0],
-      description: "Indicates if the effect removes a stun.",
-    },
-    ".keyStatus": {
-      type: "string",
-      //allowed_values: [
-      //  "tagged",
-      //  "poisoned",
-      //  "bleeding",
-      //  "stunned",
-      //  "dazed",
-      //  "virtued",
-      //  "afflicted",
-      //  "transformed",
-      //],
-      description: "The key status applied or checked by the effect.",
+      description: "Cures the target of Stuns.",
     },
     ".riposte": {
       type: "boolean",
       allowed_values: [1, 0],
-      description: "Indicates if the effect enables riposte.",
+      description: "Activates Riposte on the target. The target can be any actor, however, only performer is recommended as it can break workarounds on other classes, in which case they will cease to function correctly.",
     },
     ".riposte_on_miss_chance_add": {
       type: "number",
-      description: "Chance added to riposte on a miss.",
+      description: "Flat Riposte Chance when missed.",
     },
     ".riposte_on_hit_chance_add": {
       type: "number",
-      description: "Chance added to riposte on a hit.",
+      description: "Flat Riposte Chance when hit.",
     },
     ".riposte_on_miss_chance_multiply": {
       type: "number",
-      description: "Multiplier for riposte chance on a miss.",
+      description: "Riposte Chance multiplier when missed.",
     },
     ".riposte_on_hit_chance_multiply": {
       type: "number",
-      description: "Multiplier for riposte chance on a hit.",
+      description: "Riposte Chance multiplier when hit.",
     },
     ".riposte_effect": {
       type: "string",
-      description: "The effect ID triggered by riposte.",
+      description: "The effect used by the target on Riposte.",
+      addInfo: "This stacks with the `.effects` of the `.riposte skill`, but there can only be one effect applied to the target at once by `.riposte_effect`,"
     },
     ".clear_riposte": {
       type: "boolean",
       allowed_values: [1, 0],
-      description: "Indicates if the effect clears riposte.",
+      description: "Clear Riposte from the target.",
     },
     ".guard": {
       type: "boolean",
       allowed_values: [1, 0],
-      description: "Indicates if the effect enables guarding.",
+      description: "Makes the performer Guard the target. Applies Guarded status to target and Guarding status to performer. Guarded status needs to be cleared from the target before they can be guarded again, and Guarding status needs to be cleared from the performer before they can be Guarded.",
+      addInfo: "Triggers regardless of chance, given value or on_hit/on_miss."
     },
     ".clearguarding": {
       type: "boolean",
       allowed_values: [1, 0],
-      description: "Indicates if the effect clears guarding.",
+      description: "Clear Guarding from the target.",
     },
     ".clearguarded": {
       type: "boolean",
       allowed_values: [1, 0],
-      description: "Indicates if the effect clears guarded status.",
+      description: "Clear Guarded from the target.",
     },
     ".torch_decrease": {
       type: "number",
-      description: "The amount by which the torch level decreases.",
+      description: "Torch light decrease amount.",
     },
     ".torch_increase": {
       type: "number",
-      description: "The amount by which the torch level increases.",
+      description: "Torch light increase amount.",
     },
     ".item": {
       type: "boolean",
       allowed_values: [1, 0],
-      description: "Indicates if the effect applies to an item.",
+      description: "Whether or not the effect is used by an item.",
     },
     ".curio": {
       type: "boolean",
       allowed_values: [1, 0],
-      description: "Indicates if the effect applies to a curio.",
+      description: "Whether or not the effect is used by a curio.",
     },
     ".dotShuffle": {
       type: "boolean",
       allowed_values: [1, 0],
-      description: "Indicates if the effect shuffles the target.",
-    },
-    ".push": {
-      type: "number",
-      description: "The push value applied by the effect.",
-    },
-    ".pull": {
-      type: "number",
-      description: "The pull value applied by the effect.",
-    },
-    ".shuffletarget": {
-      type: "boolean",
-      description: "Indicates if the target is shuffled.",
-      canBeNull: true
-    },
-    ".shuffleparty": {
-      type: "boolean",
-      description: "Indicates if the party is shuffled.",
-      canBeNull: true
-    },
-    ".destealth": {
-      type: "boolean",
-      description: "Indicates if the effect removes stealth.",
-      allowed_values: [1, 0],
-    },
-    ".instant_shuffle": {
-      type: "boolean",
-      description: "Indicates if the shuffle is instant.",
-    },
-    ".buff_amount": {
-      type: "number",
-      description: "The amount of the buff applied.",
-    },
-    ".buff_type": {
-      type: "string",
-      description: "The type of buff applied.",
-    },
-    ".buff_sub_type": {
-      type: "string",
-      description: "The subtype of buff applied.",
-    },
-    ".buff_duration_type": {
-      type: "string",
-      description: "The duration type of the buff.",
-    },
-    ".steal_buff_stat_type": {
-      type: "string",
-      description: "The stat type of the buff to steal.",
-    },
-    ".hp_dot_bleed": {
-      type: "number",
-      description: "The bleed damage over time applied to HP.",
-    },
-    ".hp_dot_poison": {
-      type: "number",
-      description: "The poison damage over time applied to HP.",
-    },
-    ".hp_dot_heal": {
-      type: "number",
-      description: "The healing over time applied to HP.",
-    },
-    ".stress_dot": {
-      type: "number",
-      description: "The stress damage over time applied.",
+      commonName: "Stumble",
+      description: "Applies Shuffle DOT to the target. Despite the parameter name, doesnt to DMG over time, shuffles the target at the beginning of their turn instead.",
     },
     ".shuffle_dot": {
       type: "number",
       description: "The shuffle effect applied over time.",
     },
+    ".push": {
+      type: "number",
+      description: "The amount of ranks the target gets pushed back.",
+    },
+    ".pull": {
+      type: "number",
+      description: "The amount of ranks the target gets pulled forward.",
+    },
+    ".shuffletarget": {
+      type: "boolean",
+      description: "Shuffles the target.",
+      canBeNull: true
+    },
+    ".shuffleparty": {
+      type: "boolean",
+      description: "Shuffles the target's party.",
+      addInfo: "Ignores move resistance/chance.",
+      canBeNull: true
+    },
+    ".destealth": {
+      type: "boolean",
+      description: "Clears Stealth from the target.",
+      allowed_values: [1, 0],
+    },
+    ".instant_shuffle": {
+      type: "boolean",
+      description: "Shuffles the target without the standard animation of being moved.",
+    },
+    ".steal_buff_stat_type": {
+      type: "string",
+      description: "The all buffs from the target that have the specified buff stat type.",
+      addInfo: "Stealing from performer is removes the buffs completely."
+    },
     ".steal_buff_source_type": {
       type: "string",
-      description: "The source type of the buff to steal.",
+      description: "The all buffs from the target that have the specified buff source type.",
+      sourceList: "buff"
     },
     ".swap_source_and_target": {
       type: "boolean",
-      description: "Indicates if the source and target are swapped.",
+      description: "Switches the target and performer of the effect based on the skill's target.", 
+      addInfo: "Ex.: Antiquarian targets Leper with a friendly skill, by default the effect's target is Leper, and the performer is Antiquarian, if this parameter is set to true, Leper will become the performer and Antiquarian the target. Works with AOE skills and effect targets.",
     },
     ".kill": {
       type: "boolean",
       allowed_values: [1, 0],
-      description: "Indicates if the effect kills the target.",
+      description: "Kill the target, ignoring everything, including Death's Door, which is skipped altogether.",
+    },
+    ".kill_enemy_types": {
+      type: "string",
+      description: "Kills the target if they have a the given enemy type. For size 0s, it is recommended over `.kill`.",
+    },
+    ".has_description": {
+      type: "boolean",
+      description: "Whether or not the effect will appear on the skill's description.",
+    },
+    ".stealth": {
+      type: "boolean",
+      allowed_values: [1, 0],
+      description: "Applies Stealth to the target.",
+    },
+    ".unstealth": {
+      type: "boolean",
+      allowed_values: [1, 0],
+      referenceDesc: ".destealth"
+    },
+    ".clear_debuff": {
+      type: "boolean",
+      allowed_values: [1, 0],
+      description: "Cures all curable debuffs from the target.",
+    },
+    ".daze": {
+      type: "number",
+      description: "The amount of turns the target will get Daze for. Unaffected by `.duration`.",
+      addInfo: "Uses Stun chance/resistance. Highly Volatile on monsters and doesnt work on heroes at all. Delegate its usage to making cooldowns (`which use .daze 0 .on_hit/on_miss false`)."
+    },
+    ".undaze": {
+      type: "boolean",
+      allowed_values: [1, 0],
+      description: "Clears Daze from the target.",
+    },
+    ".apply_on_death": {
+      type: "boolean",
+      description: "Whether or not the effect triggers even if the target dies.",
+    },
+    ".clearvirtue": {
+      type: "boolean",
+      allowed_values: [1, 0],
+      description: "Clears Virtue from the target.",
+    },
+    ".cure_disease": {
+      type: "boolean",
+      allowed_values: [1, 0],
+      description: "Cures the target of all dieases, including ones that are normall uncurable, such as Crimson Curse.",
     },
     ".immobilize": {
       type: "boolean",
       allowed_values: [1, 0],
-      description: "Indicates if the effect immobilizes the target.",
+      description: "Immobilizes the target.",
+      addInfo: "Quites buggy, works best if only used on targets in rank 1, or the whole party."
     },
     ".unimmobilize": {
       type: "boolean",
       allowed_values: [1, 0],
-      description: "Indicates if the effect removes immobilization.",
+      description: "Clears Immobilize from the target.",
     },
     ".control": {
       type: "number",
-      description: "The control value applied by the effect.",
+      description: "Charms the target.",
+      addInfo: "Originally used debuff chance/res, no longer the case, just uses a flat chance. Buggy with heroes as they can break if the AI controls them. When used on a monster, it simply mirrors their combat sprite, but they seem to work as usual otherwise?"
     },
     ".uncontrol": {
       type: "boolean",
       allowed_values: [1, 0],
-      description: "Indicates if the effect removes control.",
-    },
-    ".kill_enemy_types": {
-      type: "string",
-      description: "Specifies the enemy types killed by the effect.",
+      description: "Clears Charm from the target.",
+      addInfo: "A Charmed target can apply this to itself, surprisingly, it also works."
     },
     ".monsterType": {
       type: "string",
-      description: "Specifies the monster type affected by the effect.",
-    },
-    ".capture": {
-      type: "boolean",
-      allowed_values: [1, 0],
-      description: "Indicates if the effect captures the target.",
-    },
-    ".capture_remove_from_party": {
-      type: "boolean",
-      allowed_values: [1, 0],
-      description:
-        "Indicates if the captured target is removed from the party.",
-    },
-    ".disease": {
-      type: "string",
-      description: "Specifies the disease applied by the effect.",
+      description: "Monster type rule, used for effect based buffs.",
     },
     ".remove_vampire": {
       type: "boolean",
       allowed_values: [1, 0],
-      description: "Indicates if the effect removes vampirism.",
+      description: "Cures the target of the Crimson Curse/all Vampire tag diseases/quirks.",
+    },
+    ".capture": {
+      type: "boolean",
+      allowed_values: [1, 0],
+      description: "Captures the target, the version used by Crew.",
+      addInfo: "Can't be used by heroes."
+    },
+    ".capture_remove_from_party": {
+      type: "boolean",
+      allowed_values: [1, 0],
+      description: "Captures the target, the version used by Hag.",
+      addInfo: "Unless you plan to use it exactly as Red Hook intended, I'd suggest leaving it be. Can't be used by heroes."
+    },
+    ".disease": {
+      type: "string",
+      description: "Applies the given Disease/Quirk to the target.",
     },
     ".summon_monsters": {
       type: "string_list",
-      description: "List of monster IDs summoned by the effect.",
+      description: "List of monsters to summon.",
+      addInfo: "Unless the monster is size 0, do not ever use this with heroes."
     },
     ".summon_chances": {
       type: "number_list",
-      description: "The chance of summoning monsters.",
+      description: "The chance of each monster on the list getting summoned, follows the same order as the list of `.summon_monsters`.",
     },
     ".summon_ranks": {
       type: "number",
-      description: "The ranks of monsters summoned.",
+      description: "The ranks in which the monsters will get summoned.",
     },
     ".summon_limits": {
       type: "number",
-      description: "The limit on the number of monsters summoned.",
+      description: "The maximum number of monsters that will get summoned.",
     },
     ".summon_count": {
       type: "number",
-      description: "The count of monsters summoned.",
+      description: "The number of monsters that will get summoned.",
     },
     ".summon_erase_data_on_roll": {
       type: "boolean",
       allowed_values: [1, 0],
-      description: "Indicates if summon data is erased on roll.",
+      description: "Seems to not exist/be used?",
     },
     ".summon_can_spawn_loot": {
       type: "boolean",
-      description: "Indicates if summoned monsters can spawn loot.",
+      description: "Whether or not the summoned monsters can drop loot on death.",
     },
     ".summon_rank_is_previous_monster_class": {
       type: "boolean",
       description:
-        "Indicates if summon rank is based on the previous monster class.",
+        "Whether or not the summoned monster will take place of dead monsters.",
     },
     ".summon_does_roll_initiatives": {
       type: "boolean",
       allowed_values: [1, 0],
-      description: "Indicates if summoned monsters roll initiatives.",
+      description: "Whether or not the summoned monsters roll initiative on spawn.",
+      addInfo: "A bit buggy."
     },
     ".crit_doesnt_apply_to_roll": {
       type: "boolean",
-      description: "Indicates if critical hits don't apply to rolls.",
+      description: "Whether or not the effect's chance will be affected by CRITs.",
     },
     ".virtue_blockable_chance": {
       type: "number",
-      description: "The chance of blocking virtue.",
+      description: "The chance for a virtued hero to resist the effect.",
     },
     ".affliction_blockable_chance": {
       type: "number",
-      description: "The chance of blocking affliction.",
+      description: "The chance for an afflicted hero to resist the effect.",
     },
     ".set_mode": {
       type: "string",
-      description: "Specifies the mode set by the effect.",
+      description: "Set the target's mode to the one with the given ID.",
     },
     ".can_apply_on_death": {
       type: "boolean",
-      description: "Indicates if the effect can apply on death.",
+      description: "Whether or not the effect will trigger when the target dies.",
+      addInfo: "Default Value: False"
     },
     ".apply_once": {
       type: "boolean",
-      description: "Indicates if the effect applies only once.",
+      description: "Whether or not the effect will trigger for each targeted actor.",
+      addInfo: "Default Value: False"
+    },
+    ".apply_with_result": {
+      type: "boolean",
+      description: "Whether or not the effect triggers before DMG calculation.",
+      addInfo: "Default Value: False"
+    },
+    ".skill_instant": {
+      type: "boolean",
+      description: "Whether or not the effect triggers when the skill is selected.",
+    },
+    ".buff_is_clear_debuff_valid": {
+      type: "boolean",
+      description: "Whether or not the (de)buffs applied by the effect can be cured.",
+    },
+    ".refreshes_skill_uses": {
+      type: "boolean",
+      description: "Refreshes limited skill number uses.",
     },
     ".rank_target": {
-      type: "string",
-      description: "Specifies the rank target of the effect.",
+      type: "number",
+      description: "Rank Targeting mechanic used by Prophet and Vvulf. Applies Rank Targeting to the specified rank if theyre targeted.",
+      addInfo: "Only usable by Monster, and only works on Hero ranks."
     },
     ".clear_rank_target": {
       type: "string",
-      description: "Specifies the rank target cleared by the effect.",
+      description: "Clears Rank Targeting from the specified ranks if its the rank the targeted Hero is in."
     },
     ".performer_rank_target": {
       type: "boolean",
       allowed_values: [1, 0],
-      description: "Indicates if the performer rank is targeted.",
-    },
-    ".apply_with_result": {
-      type: "boolean",
-      description: "Indicates if the effect applies with a result.",
+      description: "Whether or not the performer will apply Rank Targeting to the targeted Hero's rank.",
+      addInfo: "Only usable by Monster, and only works on Hero ranks."
     },
     ".initiative_change": {
       type: "number",
@@ -467,299 +646,257 @@ export const GAME_MECHANICS_SCHEMA: {
     },
     ".source_heal_type": {
       type: "string",
-      description: "Specifies the source type of healing.",
-    },
-    ".skill_instant": {
-      type: "boolean",
-      description: "Indicates if the skill is instant.",
+      description: "The source of healing applied by the effect. Affects the CRIT chance of the heal effect.",
+      allowed_values: Sources["heal"].list,
+      sourceList: "heal",
     },
     ".actor_dot": {
       type: "string",
-      description: "Specifies the actor dot ID applied by the effect.",
+      description: "The Actor Dot applied by the effect.",
+      addInfo: "ADOTs are required to have animation files, otherwise they will crash the game. If the ADOT is applied by a skill, the animation needs to be attached to whoever applies it. In most other cases, the animation needs to be added to the intended target, if that is heroes, they need to be applied to every single hero for it to work, individually.",
+      commonName: "ADOT(s)"
     },
     ".health_damage": {
       type: "number",
-      description: "The health damage applied by the effect.",
+      description: "Effect based DMG amount applied to the target.",
     },
     ".bark": {
       type: "string",
-      description: "Specifies the bark string entry triggered by the effect.",
+      description: "Triggers the specified bark on the target hero.",
+      addInfo: "Can trigger custom barks, thus creating custom psuedo bark triggers"
     },
     ".set_monster_class_id": {
       type: "string",
-      description: "Specifies the monster class ID set by the effect.",
+      description: "Changes the target monster into another monster with the specified ID.",
     },
     ".set_monster_class_ids": {
       type: "string_list",
-      description: "List of monster class IDs set by the effect.",
+      description: "Changes the target monster to one of the monster from the list of specified IDs.",
     },
     ".set_monster_class_chances": {
       type: "number",
-      description: "The chances of setting monster classes.",
+      description: "The chance of each ID being selected from `.set_monster_class_ids`.",
     },
     ".set_monster_class_reset_hp": {
       type: "boolean",
-      description: "Indicates if monster class reset affects HP.",
+      description: "Whether or not changing IDs will reset the monster's HP, essentially healing to the new monster's full HP.",
     },
     ".set_monster_class_reset_buffs": {
       type: "boolean",
-      description: "Indicates if monster class reset affects buffs.",
+      description: "Whether or not the monster clears all buffs when changing ID.",
     },
     ".set_monster_class_carry_over_hp_min_percent": {
       type: "number",
-      description:
-        "Minimum HP percentage carried over during monster class reset.",
+      description: "Minimum max health percentage to carry over from previous monster class.",
     },
     ".set_monster_class_clear_initative": {
       type: "boolean",
-      description: "Indicates if monster class reset clears initiative.",
+      description: "Whether or not the monster's loses initiative when changing ID.",
     },
     ".set_monster_class_clear_monster_brain_cooldowns": {
       type: "boolean",
-      description: "Indicates if monster class reset clears brain cooldowns.",
+      description: "Whether or not the monster clears AI cooldowns on when changing ID.",
     },
     ".set_monster_class_reset_scale": {
       type: "boolean",
-      description: "Indicates if monster class reset affects scaling.",
-    },
-    ".has_description": {
-      type: "boolean",
-      description: "Indicates if the effect has a description.",
-    },
-    ".stealth": {
-      type: "boolean",
-      allowed_values: [1, 0],
-      description: "Indicates if the effect applies stealth.",
-    },
-    ".unstealth": {
-      type: "boolean",
-      allowed_values: [1, 0],
-      description: "Indicates if the effect removes stealth.",
-    },
-    ".clear_debuff": {
-      type: "boolean",
-      allowed_values: [1, 0],
-      description: "Indicates if the effect clears debuffs.",
+      description: "No discernable effect???",
     },
     ".health_damage_blocks": {
       type: "number",
-      description: "The amount of health damage blocked by the effect.",
+      description: "Block tokens used from the Shieldbreaker DLC.",
     },
     ".dotSource": {
       type: "string",
-      description: "Specifies the source of the damage over time.",
+      description: "Specifies the source of DOTs applied by the the effect. Usable sources are the same as for `.buff_source_type`",
+      sourceList: "buff"
     },
     ".buff_source_type": {
       type: "string",
-      description: "Specifies the source type of the buff.",
+      description: "Specifies the buff source used by the effect.",
+      sourceList: "buff"
     },
     ".use_item_id": {
       type: "string",
-      description: "Specifies the item ID used by the effect.",
+      description: "Calls the specified item's effect to be triggered by this effect on top of whatever else it already does.",
     },
     ".use_item_type": {
       type: "string",
-      description: "Specifies the item type used by the effect.",
+      description: "The item type of the item called with `.use_item_id`.",
     },
     ".skips_endless_wave_curio": {
       type: "boolean",
-      description: "Indicates if the effect skips endless wave curio.",
+      description: "It starts the endless mode and triggers the `Onward` button's popup.",
     },
     ".spawn_target_actor_base_class_id": {
       type: "string",
-      description: "Specifies the base class ID of the target actor spawned.",
-    },
-    ".clearvirtue": {
-      type: "boolean",
-      allowed_values: [1, 0],
-      description: "Indicates if the effect clears virtue.",
-    },
-    ".riposte_validate": {
-      type: "boolean",
-      description: "Indicates if riposte validation is enabled.",
-    },
-    ".buff_is_clear_debuff_valid": {
-      type: "boolean",
-      description: "Indicates if clearing debuffs is valid for the buff.",
-    },
-    ".refreshes_skill_uses": {
-      type: "boolean",
-      description: "Indicates if the effect refreshes skill uses.",
-    },
-    ".cure_disease": {
-      type: "boolean",
-      allowed_values: [1, 0],
-      description: "Indicates if the effect cures a disease.",
+      description: "When a monster spawns, all actors with the given ID will be the effect's selected target.",
     },
     ".individual_target_actor_rolls": {
       type: "boolean",
-      description: "Indicates if individual target actor rolls are enabled.",
+      description: "Whether or not an effect rolls chance for each individual target actor (ex.: 4 targets rolling bleed resistance individually).",
+      addInfo: "Default value: false"
     },
     ".damage_type": {
       type: "string",
-      description: "Specifies the type of damage applied.",
+      description: "The type of the effect based DMG applied by the effect.",
     },
     ".damage_source_type": {
       type: "string",
-      description: "Specifies the source type of the damage.",
+      description: "The source of the effect based DMG applied by the effect.",
     },
     ".damage_source_data": {
       type: "string",
-      description:
-        "Specifies the data for the damage source, e.g., monster ID or trinket ID.",
-    },
-    ".daze": {
-      type: "number",
-      description: "Indicates if the effect applies daze.",
-    },
-    ".undaze": {
-      type: "boolean",
-      allowed_values: [1, 0],
-      description: "Indicates if the effect removes daze.",
-    },
-    ".apply_on_death": {
-      type: "boolean",
-      description: "Indicates if the effect applies on death.",
+      description: "Additional data for `.damage_source_type`.",
+      addInfo: ""
     },
   },
   combat_skill: {
     ".id": {
       type: "string",
-      description: "Skill name identifier",
+      description: "The Skill's ID.",
     },
     ".dmg": {
-      type: "number",
-      description: "Damage range for monsters or value for heroes",
+      type: "string",
+      description: "The Skill's DMG Modifier.",
     },
     ".atk": {
       type: "number",
-      description: "Attack value",
+      description: "The Skill's Base Accuracy.",
     },
     ".move": {
       type: "range",
-      description: "Movement values",
+      description: "The direction the skill moves the performer in, and how many ranks.",
+      addInfo: "Works different for `.type move`, instead of moving the hero upon skill use, it will be how much the hero can move in what direction."
     },
     ".crit": {
       type: "number",
-      description: "Critical hit value",
+      description: "The Skill's base CRIT chance.",
     },
     ".level": {
       type: "number",
-      description: "Skill level value",
+      description: "Determines which level of the skill is being modified by the line.",
+      addInfo: "If not present in a line, all levels of the skill will be modified by the line."
     },
     ".type": {
       type: "string",
       description: "Skill type",
-      //allowed_values: ["melee", "ranged", "move", "teleport", ""],
+      vanillaValuesTitle: "Vanilla Skill Types",
+      vanillaValues: ["melee", "ranged", "move", "teleport", ""],
     },
     ".per_battle_limit": {
       type: "number",
-      description: "Limit per battle",
+      description: "The number of times the Skill can be used in a Battle.",
     },
     ".per_turn_limit": {
       type: "number",
-      description: "Limit per turn",
+      description: "The number of times the Skill can be used in a turn.", 
+      addInfo: "Only affects Free Action. Free Action attacks disregard this parameter.",
     },
     ".is_continue_turn": {
       type: "boolean",
-      description: "Whether the skill continues the turn",
+      description: "Whether or not the Skill is a Free Action. Does not end the performer's turn.",
+      addInfo: "Highly unrecommended for Attack skills as it has many bugs.",
     },
     ".launch": {
       type: "string",
-      description: "Launch ranks",
+      description: "The Skill's launch ranks.",
     },
     ".target": {
       type: "string",
-      description: "Target ranks",
+      description: "The Skill's target ranks.",
       canBeNull: true,
     },
     ".self_target_valid": {
       type: "boolean",
-      description: "Whether self-targeting is valid",
+      description: "Whether or not the Skill can target the performer.",
     },
     ".is_crit_valid": {
       type: "boolean",
-      description: "Whether critical hits are valid",
+      description: "Whether or not the Skill can CRIT.",
     },
     ".effect": {
       type: "string_list",
-      description: "Effect IDs",
+      description: "The effects used by the Skill.",
+      addInfo: "Effects trigger in the order they are written, but they still also respect the effect timing/trigger order.",
+      displayEffectOrder: true,
     },
     ".valid_modes": {
       type: "string_list",
-      description: "Valid mode IDs",
-    },
-    ".generation_guaranteed": {
-      type: "boolean",
-      description: "Whether generation is guaranteed",
+      description: "The modes the Skill is usable in.",
     },
     ".ignore_stealth": {
       type: "boolean",
-      description: "Whether the skill ignores stealth",
+      description: "Whether or not the Skill ignores Stealth.",
     },
     ".ignore_guard": {
       type: "boolean",
-      description: "Whether the skill ignores guard",
+      description: "Whether or not the Skill ignores Guard.",
     },
-    ".can_miss": {
+    ".ignore_riposte": {
       type: "boolean",
-      description: "Whether the skill can miss",
-    },
-    ".can_be_riposted": {
-      type: "boolean",
-      description: "Whether the skill can be riposted",
+      description: "Whether or not the Skill Ignores Riposte.",
     },
     ".ignore_protection": {
       type: "boolean",
-      description: "Whether the skill ignores protection",
+      description: "Whether or not the Skill ignores PROT.",
+    },
+    ".can_miss": {
+      type: "boolean",
+      description: "Whether or not the Skill can miss at all.",
+    },
+    ".can_be_riposted": {
+      type: "boolean",
+      description: "Whether or not the Skill can be riposted.",
+      addInfo: "Essentially the same as `.ignore_riposte true`, unsure if used."
     },
     ".required_performer_hp_range": {
       type: "range",
-      description: "Required HP range for the performer",
+      description: "The HP Range in which the Skill is usable.",
     },
     ".rank_damage_modifiers": {
       type: "number_list",
-      description: "Damage modifiers for ranks",
+      description: "The Skill's DMG modifier for against each specific rank.",
     },
     ".heal": {
       type: "range",
-      description: "Healing range",
+      description: "The Skill's Healing Range.",
     },
     ".can_crit_heal": {
       type: "boolean",
-      description: "Whether critical healing is possible",
+      description: "Whether or not the Skill can CRIT Heal.",
+    },
+    ".generation_guaranteed": {
+      type: "boolean",
+      description: "Whether or not the hero is guaranteed to start with the skill.",
+      addInfo: "If there are multiple skills with this set to true, only the top 1 will be guaranteed"
     },
     ".is_stall_invalidating": {
       type: "boolean",
-      description: "Whether the skill invalidates stalling",
+      description: "Whether or not the skill will counts as stalling when used.",
     },
     ".refresh_after_each_wave": {
       type: "boolean",
-      description: "Whether the skill refreshes after each wave",
+      description: "Whether or not the the skill's use number refreshes after each wave of a wave quest.",
     },
     ".damage_heal_base_class_ids": {
       type: "string_list",
-      description: "Base class IDs for damage or healing",
-    },
-    ".ignore_deathsdoor": {
-      type: "boolean",
-      description: "Whether the skill ignores death's door",
+      description: "The actors with the given IDs will be healing a certain percentage based on the DMG dealt.",
     },
     ".icon": {
       type: "string",
-      description: "Icon name",
+      description: "The name of the skill icon used by the skill.",
     },
     ".anim": {
       type: "string",
-      description: "Animation name",
+      description: "The name of the animation used by the skill.",
     },
     ".fx": {
       type: "string",
-      description: "Effect name",
+      description: "The name of the VFX used by the skill, targets the performer.",
     },
     ".targfx": {
       type: "string",
-      description: "Target effect name",
+      description: "The name of the target VFX of the skill.",
     },
     ".targheadfx": {
       type: "string",
@@ -837,154 +974,131 @@ export const GAME_MECHANICS_SCHEMA: {
       type: "number",
       description: "Custom idle round duration",
     },
+    ".can_display_skill_name": {
+      type: "boolean",
+      description: "Whether the skill name can be displayed",
+    },
     ".can_display_performer_selection_after_turn": {
       type: "boolean",
       description: "Whether performer selection can be displayed after turn",
     },
-    ".ignore_riposte": {
-      type: "boolean",
-      description: "Whether the skill ignores riposte",
-    }
   },
   combat_move_skill: {
     ".id": {
       type: "string",
-      description: "Skill name identifier",
+      description: "The Skill's ID",
     },
     ".dmg": {
       type: "string",
-      description: "Damage range for monsters or value for heroes",
+      description: "The Skill's DMG Modifier.",
     },
     ".atk": {
       type: "number",
-      description: "Attack value",
+      description: "The Skill's Base Accuracy.",
     },
     ".move": {
       type: "range",
-      description: "Movement values",
+      description: "The direction the skill moves the performer in, and how many ranks.",
     },
     ".crit": {
       type: "number",
-      description: "Critical hit value",
+      description: "The Skill's base CRIT chance.",
     },
     ".level": {
       type: "number",
-      description: "Skill level value",
+      description: "Determines which level of the skill is being modified by the line.",
+      addInfo: "If not present in a line, all levels of the skill will be modified by the line."
     },
     ".type": {
       type: "string",
       description: "Skill type",
-      //allowed_values: ["melee", "ranged", "move", "teleport", ""],
-    },
-    ".starting_cooldown": {
-      type: "number",
-      description: "Starting cooldown value",
+      vanillaValuesTitle: "Vanilla Skill Types",
+      vanillaValues: ["melee", "ranged", "move", "teleport", ""],
     },
     ".per_battle_limit": {
       type: "number",
-      description: "Limit per battle",
+      description: "The number of times the Skill can be used in a Battle.",
     },
     ".per_turn_limit": {
       type: "number",
-      description: "Limit per turn",
+      description: "The number of times the Skill can be used in a turn.", 
+      addInfo: "Only affects Free Action. Free Action attacks disregard this parameter.",
     },
     ".is_continue_turn": {
       type: "boolean",
-      description: "Whether the skill continues the turn",
+      description: "Whether or not the Skill is a Free Action. Does not end the performer's turn.",
+      addInfo: "Highly unrecommended for Attack skills as .",
     },
     ".launch": {
       type: "string",
-      description: "Launch ranks",
+      description: "The Skill's launch ranks.",
     },
     ".target": {
       type: "string",
-      description: "Target ranks",
+      description: "The Skill's target ranks.",
       canBeNull: true,
     },
     ".self_target_valid": {
       type: "boolean",
-      description: "Whether self-targeting is valid",
-    },
-    ".extra_targets_chance": {
-      type: "number",
-      description: "Chance for extra targets",
-    },
-    ".extra_targets_count": {
-      type: "number",
-      description: "Count of extra targets",
+      description: "Whether or not the Skill can target the performer.",
     },
     ".is_crit_valid": {
       type: "boolean",
-      description: "Whether critical hits are valid",
+      description: "Whether or not the Skill can CRIT.",
     },
     ".effect": {
       type: "string_list",
-      description: "Effect IDs",
+      description: "The effects used by the Skill.",
+      addInfo: "Effects trigger in the order they are written, but they still also respect the effect timing/trigger order.",
+      displayEffectOrder: true,
     },
     ".valid_modes": {
       type: "string_list",
-      description: "Valid mode IDs",
+      description: "The modes the Skill is usable in.",
     },
     ".ignore_stealth": {
       type: "boolean",
-      description: "Whether the skill ignores stealth",
+      description: "Whether or not the Skill ignores Stealth.",
     },
     ".ignore_guard": {
       type: "boolean",
-      description: "Whether the skill ignores guard",
+      description: "Whether or not the Skill ignores Guard.",
     },
-    ".can_miss": {
+    ".ignore_riposte": {
       type: "boolean",
-      description: "Whether the skill can miss",
-    },
-    ".can_be_riposted": {
-      type: "boolean",
-      description: "Whether the skill can be riposted",
+      description: "Whether or not the Skill Ignores Riposte.",
     },
     ".ignore_protection": {
       type: "boolean",
-      description: "Whether the skill ignores protection",
+      description: "Whether or not the Skill ignores PROT.",
+    },
+    ".can_miss": {
+      type: "boolean",
+      description: "Whether or not the Skill can miss.",
+    },
+    ".can_be_riposted": {
+      type: "boolean",
+      description: "Whether or not the Skill can be riposted.",
     },
     ".required_performer_hp_range": {
       type: "range",
-      description: "Required HP range for the performer",
+      description: "The HP Range in which the Skill is usable.",
     },
     ".rank_damage_modifiers": {
       type: "number_list",
-      description: "Damage modifiers for ranks",
+      description: "The Skill's DMG modifier for against each specific rank.",
     },
     ".heal": {
       type: "range",
-      description: "Healing value",
+      description: "The Skill's Healing Range.",
     },
     ".can_crit_heal": {
       type: "boolean",
-      description: "Whether critical healing is possible",
+      description: "Whether or not the Skill can CRIT Heal.",
     },
     ".generation_guaranteed": {
       type: "boolean",
-      description: "Whether generation is guaranteed",
-    },
-    ".is_user_selected_targets": {
-      type: "boolean",
-      description: "Whether the user selects targets",
-    },
-    ".is_knowledgeable": {
-      type: "boolean",
-      description: "Whether the skill is knowledgeable",
-    },
-    ".is_monster_rerank_valid_on_attack": {
-      type: "boolean",
-      description: "Whether monster rerank is valid on attack",
-    },
-    ".is_monster_rerank_valid_on_friendly_presentation_end": {
-      type: "boolean",
-      description:
-        "Whether monster rerank is valid on friendly presentation end",
-    },
-    ".is_monster_rerank_valid_on_friendly_post_result": {
-      type: "boolean",
-      description: "Whether monster rerank is valid on friendly post result",
+      description: "Whether generation is guaranteed.",
     },
     ".is_stall_invalidating": {
       type: "boolean",
@@ -997,10 +1111,6 @@ export const GAME_MECHANICS_SCHEMA: {
     ".damage_heal_base_class_ids": {
       type: "string_list",
       description: "Base class IDs for damage or healing",
-    },
-    ".ignore_deathsdoor": {
-      type: "boolean",
-      description: "Whether the skill ignores death's door",
     },
     ".icon": {
       type: "string",
@@ -1094,10 +1204,6 @@ export const GAME_MECHANICS_SCHEMA: {
       type: "number",
       description: "Custom idle round duration",
     },
-    ".has_crit_vo": {
-      type: "boolean",
-      description: "Whether critical voiceover is present",
-    },
     ".can_display_skill_name": {
       type: "boolean",
       description: "Whether the skill name can be displayed",
@@ -1105,69 +1211,17 @@ export const GAME_MECHANICS_SCHEMA: {
     ".can_display_performer_selection_after_turn": {
       type: "boolean",
       description: "Whether performer selection can be displayed after turn",
-    },
-    ".ignore_riposte": {
-      type: "boolean",
-      description: "Whether the skill ignores riposte",
     },
   },
   skill: {
-    ".id": {
-      type: "string",
-      description: "Skill name identifier",
-    },
     ".dmg": {
       type: "range",
-      description: "Damage range for monsters or value for heroes",
+      description: "The skill's DMG range.",
       canBeNull: true
-    },
-    ".atk": {
-      type: "number",
-      description: "Attack value",
-      canBeNull: true
-    },
-    ".move": {
-      type: "range",
-      description: "Movement values",
-    },
-    ".crit": {
-      type: "number",
-      description: "Critical hit value",
-      canBeNull: true
-    },
-    ".type": {
-      type: "string",
-      description: "Skill type",
-      //allowed_values: ["melee", "ranged", "move", "teleport", ""],
     },
     ".starting_cooldown": {
       type: "number",
       description: "Starting cooldown value",
-    },
-    ".per_battle_limit": {
-      type: "number",
-      description: "Limit per battle",
-    },
-    ".per_turn_limit": {
-      type: "number",
-      description: "Limit per turn",
-    },
-    ".is_continue_turn": {
-      type: "boolean",
-      description: "Whether the skill continues the turn",
-    },
-    ".launch": {
-      type: "string",
-      description: "Launch ranks",
-    },
-    ".target": {
-      type: "string",
-      description: "Target ranks",
-      canBeNull: true,
-    },
-    ".self_target_valid": {
-      type: "boolean",
-      description: "Whether self-targeting is valid",
     },
     ".extra_targets_chance": {
       type: "number",
@@ -1176,58 +1230,6 @@ export const GAME_MECHANICS_SCHEMA: {
     ".extra_targets_count": {
       type: "number",
       description: "Count of extra targets",
-    },
-    ".is_crit_valid": {
-      type: "boolean",
-      description: "Whether critical hits are valid",
-    },
-    ".effect": {
-      type: "string_list",
-      description: "Effect IDs",
-    },
-    ".valid_modes": {
-      type: "string_list",
-      description: "Valid mode IDs",
-    },
-    ".ignore_stealth": {
-      type: "boolean",
-      description: "Whether the skill ignores stealth",
-    },
-    ".ignore_guard": {
-      type: "boolean",
-      description: "Whether the skill ignores guard",
-    },
-    ".can_miss": {
-      type: "boolean",
-      description: "Whether the skill can miss",
-    },
-    ".can_be_riposted": {
-      type: "boolean",
-      description: "Whether the skill can be riposted",
-    },
-    ".ignore_protection": {
-      type: "boolean",
-      description: "Whether the skill ignores protection",
-    },
-    ".required_performer_hp_range": {
-      type: "range",
-      description: "Required HP range for the performer",
-    },
-    ".rank_damage_modifiers": {
-      type: "number_list",
-      description: "Damage modifiers for ranks",
-    },
-    ".heal": {
-      type: "range",
-      description: "Healing range",
-    },
-    ".can_crit_heal": {
-      type: "boolean",
-      description: "Whether critical healing is possible",
-    },
-    ".generation_guaranteed": {
-      type: "boolean",
-      description: "Whether generation is guaranteed",
     },
     ".is_user_selected_targets": {
       type: "boolean",
@@ -1250,114 +1252,6 @@ export const GAME_MECHANICS_SCHEMA: {
       type: "boolean",
       description: "Whether monster rerank is valid on friendly post result",
     },
-    ".is_stall_invalidating": {
-      type: "boolean",
-      description: "Whether the skill invalidates stalling",
-    },
-    ".refresh_after_each_wave": {
-      type: "boolean",
-      description: "Whether the skill refreshes after each wave",
-    },
-    ".damage_heal_base_class_ids": {
-      type: "string_list",
-      description: "Base class IDs for damage or healing",
-    },
-    ".ignore_deathsdoor": {
-      type: "boolean",
-      description: "Whether the skill ignores death's door",
-    },
-    ".icon": {
-      type: "string",
-      description: "Icon name",
-    },
-    ".anim": {
-      type: "string",
-      description: "Animation name",
-    },
-    ".fx": {
-      type: "string",
-      description: "Effect name",
-    },
-    ".targfx": {
-      type: "string",
-      description: "Target effect name",
-    },
-    ".targheadfx": {
-      type: "string",
-      description: "Target head effect name",
-    },
-    ".targchestfx": {
-      type: "string",
-      description: "Target chest effect name",
-    },
-    ".misstargfx": {
-      type: "string",
-      description: "Missed target effect name",
-    },
-    ".misstargheadfx": {
-      type: "string",
-      description: "Missed target head effect name",
-    },
-    ".misstargchestfx": {
-      type: "string",
-      description: "Missed target chest effect name",
-    },
-    ".area_pos_offset": {
-      type: "range",
-      description: "Area position offset (X, Y)",
-    },
-    ".target_area_pos_offset": {
-      type: "range",
-      description: "Target area position offset (X, Y)",
-    },
-    ".reset_source_stance": {
-      type: "boolean",
-      description: "Whether the source stance is reset",
-    },
-    ".reset_target_stance": {
-      type: "boolean",
-      description: "Whether the target stance is reset",
-    },
-    ".can_display_selection": {
-      type: "boolean",
-      description: "Whether the selection can be displayed",
-    },
-    ".hide_performer_health": {
-      type: "boolean",
-      description: "Whether the performer's health is hidden",
-    },
-    ".condensed_tooltip_effects": {
-      type: "boolean",
-      description: "Whether effects are condensed in the tooltip",
-    },
-    ".condensed_tooltip_stats": {
-      type: "boolean",
-      description: "Whether stats are condensed in the tooltip",
-    },
-    ".condensed_tooltip_type": {
-      type: "boolean",
-      description: "Whether type is condensed in the tooltip",
-    },
-    ".condensed_tooltip_effects_per_line": {
-      type: "number",
-      description: "Number of effects per line in the tooltip",
-    },
-    ".nil": {
-      type: "boolean",
-      description: "Hides skill stats and other information",
-    },
-    ".custom_target_anim": {
-      type: "string",
-      description: "Custom target animation name",
-    },
-    ".custom_idle_anim_name": {
-      type: "string",
-      description: "Custom idle animation name",
-    },
-    ".custom_idle_round_duration": {
-      type: "number",
-      description: "Custom idle round duration",
-    },
     ".has_crit_vo": {
       type: "boolean",
       description: "Whether critical voiceover is present",
@@ -1365,14 +1259,6 @@ export const GAME_MECHANICS_SCHEMA: {
     ".can_display_skill_name": {
       type: "boolean",
       description: "Whether the skill name can be displayed",
-    },
-    ".can_display_performer_selection_after_turn": {
-      type: "boolean",
-      description: "Whether performer selection can be displayed after turn",
-    },
-    ".ignore_riposte": {
-      type: "boolean",
-      description: "Whether the skill ignores riposte",
     }
   },
   riposte_skill: {
@@ -1509,35 +1395,35 @@ export const GAME_MECHANICS_SCHEMA: {
   resistances: {
     ".stun": {
       type: "number",
-      description: "Resistance to stun effects.",
+      description: "The actor's Stun Resistance.",
     },
     ".move": {
       type: "number",
-      description: "Resistance to movement effects.",
+      description: "The actor's Move Resistance.",
     },
     ".poison": {
       type: "number",
-      description: "Resistance to poison effects.",
+      description: "The actor's Blight Resistance.",
     },
     ".bleed": {
       type: "number",
-      description: "Resistance to bleeding effects.",
+      description: "The actor's Bleed Resistance.",
     },
     ".disease": {
       type: "number",
-      description: "Resistance to disease effects.",
+      description: "The actor's Disease Resistance.",
     },
     ".debuff": {
       type: "number",
-      description: "Resistance to debuff effects.",
+      description: "The actor's Debuff Resistance.",
     },
     ".death_blow": {
       type: "number",
-      description: "Resistance to death blow effects.",
+      description: "The actor's Death Blow Resistance.",
     },
     ".trap": {
       type: "number",
-      description: "Resistance to trap effects.",
+      description: "The actor's Trap Resistance.",
     },
   },
   mode: {
@@ -1698,7 +1584,7 @@ export const GAME_MECHANICS_SCHEMA: {
   crit: {
     ".effects": {
       type: "string_list",
-      description: "The list of effects that are fired on CRIT.",
+      description: "The list of effects that are triggered on CRIT.",
     },
     ".is_valid_effects_target": {
       type: "boolean",

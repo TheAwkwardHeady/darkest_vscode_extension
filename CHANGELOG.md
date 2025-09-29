@@ -1,5 +1,12 @@
 # Change Log
 
+## [0.3.0] - 2025-09-29
+
+### Added:
+- Added Loc Generation Features
+- Added Buff Generation
+- Added Tooltips/Explanation for Code in .info and .effect files, along with placeholders everywhere else
+
 ## [0.1.3] - 2025-05-19
 
 ### Fixed:
