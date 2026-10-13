@@ -1,0 +1,15 @@
+// Test fixture: monster skill parameters should be recognized by the extension.
+stats: .hp 10 .def 12% .prot 0.00 .spd 6 .stun_resist 20% .poison_resist 50% .bleed_resist 200% .debuff_resist 15% .move_resist 10%
+
+// Standard monster skills
+skill: .id "pic_skelearcher_move" .atk 65% .dmg 1 2 .crit 0% .launch 21 .target 12 .move 3 0
+skill: .id "pic_skelearcher_shoot" .atk 85% .dmg 4 7 .crit 10% .launch 34 .target 1234
+skill: .id "pic_skelearcher_volley" .atk 75% .dmg 2 3 .crit 2% .launch 4 .target ~1234
+
+// Effects can be defined on a separate line for the same skill ID.
+skill: .id "pic_skelearcher_move" .effect "pic_skelearcher_blight_1" "pic_skelearcher_blight_A"
+skill: .id "pic_skelearcher_shoot" .effect "pic_skelearcher_blight_1" "pic_skelearcher_blight_A"
+skill: .id "pic_skelearcher_volley" .effect "pic_skelearcher_blight_1" "pic_skelearcher_blight_A"
+
+// Riposte skill syntax should continue to work.
+riposte_skill: .id "monster_riposte1" .type "melee" .atk 100% .dmg 100% .crit 0% .launch 1234 .target 1234 .is_crit_valid false

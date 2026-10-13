@@ -1,0 +1,20 @@
+// Declare the mode first so the extension generates its dynamic mode-effects parameter.
+mode: .id test_mode
+
+// Test A: empty .effect should produce a yellow warning, not a red error.
+combat_skill: .id "test_empty_effect" .type "melee" .atk 90% .dmg 0% .crit 0% .launch 12 .target 12 .effect .valid_modes test_mode
+
+// Test B: empty .target should produce a yellow warning, not a red error.
+combat_skill: .id "test_empty_target" .type "melee" .atk 90% .dmg 0% .crit 0% .launch 12 .target .is_crit_valid false
+
+// Test C: empty dynamic mode effects should produce a yellow warning.
+combat_skill: .id "test_empty_mode_effects" .type "melee" .atk 90% .dmg 0% .crit 0% .launch 12 .target 12 .test_mode_effects
+
+// Test D: .can_apply_on_corpse should be recognized as a boolean.
+effect: .name "test_corpse_effect" .target "target" .chance 100% .can_apply_on_corpse true
+
+// Test E: Monster skill supports the same properties as combat_skill, including these parameters.
+skill: .id "test_monster_skill" .type "ranged" .atk 100% .dmg 1 2 .crit 0% .launch 4321 .target ~1234 .self_target_valid false .can_be_riposted false .rank_damage_modifiers -0.75 -0.4 -0.2 0.0 .can_miss false .ignore_stealth true .ignore_riposte true
+
+// Test F: Existing display_modifier properties should remain recognized.
+display_modifier: .disable_halos true .show_spawn_fx false .disabled_popup_text_types resist

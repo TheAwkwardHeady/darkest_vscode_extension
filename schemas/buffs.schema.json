@@ -1,0 +1,799 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://darkest-vscode-extension.local/schemas/buffs.schema.json",
+  "title": "Darkest Dungeon Buffs",
+  "description": "Buff definitions.",
+  "type": "object",
+  "required": [
+    "buffs"
+  ],
+  "properties": {
+    "buffs": {
+      "type": "array",
+      "description": "Buff definitions.",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "stat_type",
+          "stat_sub_type",
+          "amount",
+          "rule_type",
+          "rule_data"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique buff identifier. Keep IDs unique within the mod."
+          },
+          "stat_type": {
+            "type": "string",
+            "description": "Buff stat type.",
+            "enum": [
+              "activity_side_effect_chance",
+              "ambush_chance",
+              "bleed_chance",
+              "buff_duration_percent",
+              "combat_stat_add",
+              "combat_stat_multiply",
+              "crit_received_chance",
+              "cure_bleed_chance",
+              "cure_bleed_received_chance",
+              "cure_burn_chance",
+              "cure_burn_received_chance",
+              "cure_poison_chance",
+              "cure_poison_received_chance",
+              "damage_received_percent",
+              "damage_reflect_percent",
+              "deathblow_chance",
+              "debuff_chance",
+              "disable_combat_skill_attribute",
+              "food_consumption_percent",
+              "guard_blocked",
+              "guard_duration_percent",
+              "guard_duration_received_percent",
+              "guarded",
+              "heartattack_stress_heal_percent",
+              "hp_dot_bleed_amount_percent",
+              "hp_dot_bleed_amount_received_percent",
+              "hp_dot_bleed_duration_percent",
+              "hp_dot_bleed_duration_received_percent",
+              "hp_dot_burn",
+              "hp_dot_burn_amount_percent",
+              "hp_dot_burn_amount_received_percent",
+              "hp_dot_burn_decay_percent",
+              "hp_dot_poison_amount_percent",
+              "hp_dot_poison_amount_received_percent",
+              "hp_dot_poison_duration_percent",
+              "hp_dot_poison_duration_received_percent",
+              "hp_heal_amount",
+              "hp_heal_dot_amount_percent",
+              "hp_heal_dot_amount_received_percent",
+              "hp_heal_dot_duration_percent",
+              "hp_heal_dot_duration_received_percent",
+              "hp_heal_percent",
+              "hp_heal_received_percent",
+              "ignore_guard",
+              "ignore_protection",
+              "ignore_stealth",
+              "monsters_surprise_chance",
+              "move_chance",
+              "party_surprise_chance",
+              "poison_chance",
+              "quirk_evolution_death_immune",
+              "quirk_tag_evolution_duration",
+              "random_target_attack_chance",
+              "random_target_friendly_chance",
+              "remove_negative_quirk_chance",
+              "resistance",
+              "resolve_check_percent",
+              "resolve_xp_bonus_percent",
+              "riposte",
+              "riposte_duration_percent",
+              "scouting_chance",
+              "shard_consume_percent",
+              "shard_reward_percent",
+              "shuffle_dot_duration_percent",
+              "shuffle_dot_duration_received_percent",
+              "starving_damage_percent",
+              "status",
+              "stress_dmg_percent",
+              "stress_dmg_received_percent",
+              "stress_dot_amount_percent",
+              "stress_dot_amount_received_percent",
+              "stress_dot_duration_percent",
+              "stress_dot_duration_received_percent",
+              "stress_from_idle_in_town",
+              "stress_heal_percent",
+              "stress_heal_received_percent",
+              "stress_on_miss",
+              "stun_chance",
+              "tag_blocked",
+              "torch_decrease_percent",
+              "torch_increase_percent",
+              "torchlight_burn_percent",
+              "transfer_buff_from_attacker_chance",
+              "transfer_debuff_from_attacker_chance",
+              "upgrade_discount",
+              "vampire_evolution_duration",
+              "wildfire_apply_adjacent_targets",
+              "hp_dot_heal",
+              "hp_dot_bleed",
+              "hp_dot_poison"
+            ]
+          },
+          "stat_sub_type": {
+            "type": "string",
+            "description": "Buff stat subtype."
+          },
+          "amount": {
+            "type": "number",
+            "description": "Numeric magnitude of the buff. Whether this is a flat value or percentage depends on stat_type."
+          },
+          "duration_type": {
+            "type": "string",
+            "description": "Buff duration type."
+          },
+          "duration": {
+            "type": "integer",
+            "description": "Optional duration value. Interpretation depends on duration_type and the game mechanic."
+          },
+          "remove_if_not_active": {
+            "type": "boolean",
+            "description": "Whether to remove this buff when its rule is not active."
+          },
+          "rule_type": {
+            "type": "string",
+            "enum": [
+              "always",
+              "skill",
+              "riposte",
+              "rangedonly",
+              "meleeonly",
+              "actorStatus",
+              "monsterType",
+              "monsterSize",
+              "firstroundonly",
+              "in_camp",
+              "in_dungeon",
+              "in_activity",
+              "in_room",
+              "in_corridor",
+              "at_deaths_door",
+              "in_rank",
+              "hpbelow",
+              "hpabove",
+              "lightbelow",
+              "lightabove",
+              "stress_below",
+              "stress_above",
+              "virtued",
+              "afflicted",
+              "monster_type_count_min",
+              "is_vampire",
+              "target_is_vampire",
+              "has_quirk",
+              "walking_backwards",
+              "actor_base_class",
+              "in_mode",
+              "is_guarded",
+              "target_is_guarded",
+              "is_guarding",
+              "target_is_guarding",
+              "is_stealthed",
+              "target_is_stealthed",
+              "has_item_id",
+              "has_item_type",
+              "is_actor_status",
+              "no_trinkets",
+              "attacking_monster_type",
+              "target_hpabove",
+              "target_hpbelow",
+              "activated_last",
+              "activated_first",
+              "ondeathsdoorenter",
+              "torch_setting",
+              "wave_farm",
+              "wave_pre_time_and_space",
+              "wave_transition_a",
+              "wave_transition_b",
+              "wave_transition_c",
+              "wave_transition_d",
+              "target_in_rank",
+              "is_target_corpse",
+              "any_is_burning",
+              "negative_quirk_above",
+              "quest_uses_remaining_above",
+              "has_buff",
+              "target_is_burning"
+            ],
+            "description": "Buff activation rule. Must be one of the supported rule types."
+          },
+          "is_false_rule": {
+            "type": "boolean",
+            "description": "Inverts the rule condition when enabled."
+          },
+          "rule_data": {
+            "type": "object",
+            "description": "Data consumed by rule_type. The required float and string fields depend on the rule; unused fields can remain 0 or empty.",
+            "required": [
+              "float",
+              "string"
+            ],
+            "properties": {
+              "float": {
+                "type": "number",
+                "description": "Numeric parameter used by the rule."
+              },
+              "string": {
+                "type": "string",
+                "description": "String parameter used by the rule."
+              }
+            },
+            "additionalProperties": true
+          },
+          "is_clear_debuff_valid": {
+            "type": "boolean",
+            "description": "Optional flag controlling whether this buff is valid for clear-debuff behavior."
+          },
+          "remove_on_battle_complete": {
+            "type": "boolean",
+            "description": "Optional flag controlling removal when battle completes."
+          },
+          "description_tooltip_id": {
+            "type": "string",
+            "description": "Localization string ID used for a custom buff tooltip."
+          },
+          "has_description": {
+            "type": "boolean",
+            "description": "Optional flag indicating that this buff has a description."
+          },
+          "attack_additional_effect_ids": {
+            "type": "array",
+            "description": "Effect IDs to apply on attack hit/miss, when the buff rule is active. Effects resolve in order buffs were applied and after trinket effects.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "suppress_apply_poptext": {
+            "type": "boolean",
+            "description": "Prevents the overlay popup from appearing when this buff is applied."
+          },
+          "consume_on_rule_active": {
+            "type": "boolean",
+            "description": "Clears the buff when its rule is active."
+          },
+          "force_positive": {
+            "type": "boolean",
+            "description": "Forces the buff to be considered positive for tray/tooltips."
+          },
+          "clear_buffs_on_rule_active": {
+            "type": "array",
+            "description": "Buff IDs to clear when this buff’s rule is active. Cross-file ID validation is planned for a later phase.",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": true,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "stat_type": {
+                  "const": "combat_stat_add"
+                }
+              },
+              "required": [
+                "stat_type"
+              ]
+            },
+            "then": {
+              "properties": {
+                "stat_sub_type": {
+                  "type": "string",
+                  "enum": [
+                    "attack_rating",
+                    "crit_chance",
+                    "defense_rating",
+                    "protection_rating",
+                    "speed_rating",
+                    "riposte_on_hit_chance",
+                    "riposte_on_miss_chance",
+                    "max_hp",
+                    "damage_low",
+                    "damage_high"
+                  ],
+                  "description": "Valid combat stat subtype."
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "stat_type": {
+                  "const": "combat_stat_multiply"
+                }
+              },
+              "required": [
+                "stat_type"
+              ]
+            },
+            "then": {
+              "properties": {
+                "stat_sub_type": {
+                  "type": "string",
+                  "enum": [
+                    "attack_rating",
+                    "crit_chance",
+                    "defense_rating",
+                    "protection_rating",
+                    "speed_rating",
+                    "riposte_on_hit_chance",
+                    "riposte_on_miss_chance",
+                    "max_hp",
+                    "damage_low",
+                    "damage_high"
+                  ],
+                  "description": "Valid combat stat subtype."
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "stat_type": {
+                  "const": "riposte"
+                }
+              },
+              "required": [
+                "stat_type"
+              ]
+            },
+            "then": {
+              "properties": {
+                "stat_sub_type": {
+                  "type": "string",
+                  "enum": [
+                    "tag",
+                    "stealth",
+                    "hp_dot_heal",
+                    "stress_dot",
+                    "shuffle_dot",
+                    "guarded",
+                    "status",
+                    "vampire"
+                  ],
+                  "description": "Riposte subtype."
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "rule_type": {
+                  "const": "skill"
+                }
+              },
+              "required": [
+                "rule_type"
+              ]
+            },
+            "then": {
+              "properties": {
+                "rule_data": {
+                  "required": [
+                    "float",
+                    "string"
+                  ],
+                  "properties": {
+                    "string": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "rule_type": {
+                  "const": "actorStatus"
+                }
+              },
+              "required": [
+                "rule_type"
+              ]
+            },
+            "then": {
+              "properties": {
+                "rule_data": {
+                  "required": [
+                    "float",
+                    "string"
+                  ],
+                  "properties": {
+                    "string": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "rule_type": {
+                  "const": "monsterType"
+                }
+              },
+              "required": [
+                "rule_type"
+              ]
+            },
+            "then": {
+              "properties": {
+                "rule_data": {
+                  "required": [
+                    "float",
+                    "string"
+                  ],
+                  "properties": {
+                    "string": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "rule_type": {
+                  "const": "in_dungeon"
+                }
+              },
+              "required": [
+                "rule_type"
+              ]
+            },
+            "then": {
+              "properties": {
+                "rule_data": {
+                  "required": [
+                    "float",
+                    "string"
+                  ],
+                  "properties": {
+                    "string": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "rule_type": {
+                  "const": "in_activity"
+                }
+              },
+              "required": [
+                "rule_type"
+              ]
+            },
+            "then": {
+              "properties": {
+                "rule_data": {
+                  "required": [
+                    "float",
+                    "string"
+                  ],
+                  "properties": {
+                    "string": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "rule_type": {
+                  "const": "monster_type_count_min"
+                }
+              },
+              "required": [
+                "rule_type"
+              ]
+            },
+            "then": {
+              "properties": {
+                "rule_data": {
+                  "required": [
+                    "float",
+                    "string"
+                  ],
+                  "properties": {
+                    "string": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "rule_type": {
+                  "const": "has_quirk"
+                }
+              },
+              "required": [
+                "rule_type"
+              ]
+            },
+            "then": {
+              "properties": {
+                "rule_data": {
+                  "required": [
+                    "float",
+                    "string"
+                  ],
+                  "properties": {
+                    "string": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "rule_type": {
+                  "const": "actor_base_class"
+                }
+              },
+              "required": [
+                "rule_type"
+              ]
+            },
+            "then": {
+              "properties": {
+                "rule_data": {
+                  "required": [
+                    "float",
+                    "string"
+                  ],
+                  "properties": {
+                    "string": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "rule_type": {
+                  "const": "in_mode"
+                }
+              },
+              "required": [
+                "rule_type"
+              ]
+            },
+            "then": {
+              "properties": {
+                "rule_data": {
+                  "required": [
+                    "float",
+                    "string"
+                  ],
+                  "properties": {
+                    "string": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "rule_type": {
+                  "const": "has_item_id"
+                }
+              },
+              "required": [
+                "rule_type"
+              ]
+            },
+            "then": {
+              "properties": {
+                "rule_data": {
+                  "required": [
+                    "float",
+                    "string"
+                  ],
+                  "properties": {
+                    "string": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "rule_type": {
+                  "const": "has_item_type"
+                }
+              },
+              "required": [
+                "rule_type"
+              ]
+            },
+            "then": {
+              "properties": {
+                "rule_data": {
+                  "required": [
+                    "float",
+                    "string"
+                  ],
+                  "properties": {
+                    "string": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "rule_type": {
+                  "const": "is_actor_status"
+                }
+              },
+              "required": [
+                "rule_type"
+              ]
+            },
+            "then": {
+              "properties": {
+                "rule_data": {
+                  "required": [
+                    "float",
+                    "string"
+                  ],
+                  "properties": {
+                    "string": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "rule_type": {
+                  "const": "attacking_monster_type"
+                }
+              },
+              "required": [
+                "rule_type"
+              ]
+            },
+            "then": {
+              "properties": {
+                "rule_data": {
+                  "required": [
+                    "float",
+                    "string"
+                  ],
+                  "properties": {
+                    "string": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "rule_type": {
+                  "const": "torch_setting"
+                }
+              },
+              "required": [
+                "rule_type"
+              ]
+            },
+            "then": {
+              "properties": {
+                "rule_data": {
+                  "required": [
+                    "float",
+                    "string"
+                  ],
+                  "properties": {
+                    "string": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "rule_type": {
+                  "const": "has_buff"
+                }
+              },
+              "required": [
+                "rule_type"
+              ]
+            },
+            "then": {
+              "properties": {
+                "rule_data": {
+                  "required": [
+                    "float",
+                    "string"
+                  ],
+                  "properties": {
+                    "string": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "additionalProperties": true
+}

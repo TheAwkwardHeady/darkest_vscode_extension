@@ -16,16 +16,15 @@
 			"detail": "tsc -watch -p ./"
 		},
 		{
-			"type": "typescript",
-			"tsconfig": "tsconfig.json",
-			"problemMatcher": [
-				"$tsc"
-			],
+			"type": "npm",
+			"script": "compile",
+			"problemMatcher": "$tsc",
 			"group": {
 				"kind": "build",
 				"isDefault": true
 			},
-			"label": "tsc: build - tsconfig.json"
+			"label": "npm: compile",
+			"detail": "Runs the project's local TypeScript compiler"
 		}
 	]
 }

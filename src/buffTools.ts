@@ -1,11 +1,26 @@
 import * as vscode from 'vscode';
 
-export function checkIfBuffFile(): boolean {
-  const editor = vscode.window.activeTextEditor;
-  return editor ? editor.document.uri.fsPath.includes("\\shared\\buffs\\") : false;
+export function checkIfBuffFile(editor: vscode.TextEditor | undefined = vscode.window.activeTextEditor): boolean {
+  if (!editor) {
+    return false;
+  }
+
+  // Buff creation is only valid in files whose name ends with .buffs.json.
+  // Use basename so this works on Windows and Unix-style paths.
+  const fileName = editor.document.uri.path.split('/').pop()?.toLowerCase() ?? '';
+  return fileName.endsWith('.buffs.json');
+}
+
+function showBuffFileWarning(): void {
+  void vscode.window.showWarningMessage('Buff tools can only be used in .buffs.json files.');
 }
 
 export function createTooltipBuff(editor:vscode.TextEditor, tooltipID: string){
+    if (!checkIfBuffFile(editor)) {
+        showBuffFileWarning();
+        return;
+    }
+
     let buff = `
         {
             "id": "`+tooltipID+`",
@@ -32,6 +47,11 @@ export function createTooltipBuff(editor:vscode.TextEditor, tooltipID: string){
 }
 
 export function createBuff(editor:vscode.TextEditor, tooltipID: string, type: string, sub_type: string){
+    if (!checkIfBuffFile(editor)) {
+        showBuffFileWarning();
+        return;
+    }
+
     let buff = `
         {
             "id": "`+tooltipID+`",

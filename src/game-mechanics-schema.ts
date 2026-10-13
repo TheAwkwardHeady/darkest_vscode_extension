@@ -94,9 +94,13 @@ export const GAME_MECHANICS_SCHEMA: {
         "target_group",
         "target_group_other",
         "target_enemy_group",
+        "target_enemy_rank",
+        "this_trinket",
+        "target_enemy_random",
         "global",
       ],
       description: "The target of the effect.",
+      addInfo: "The target_enemy_rank value requires .clear_rank_target. The target_enemy_random value selects a random monster. The this_trinket value targets the trinket that triggered the effect.",
     },
     ".curio_result_type": {
       type: "string",
@@ -603,6 +607,10 @@ export const GAME_MECHANICS_SCHEMA: {
       description: "Whether or not the effect will trigger when the target dies.",
       addInfo: "Default Value: False"
     },
+    ".can_apply_on_corpse": {
+      type: "boolean",
+      description: "Whether or not the effect can be applied to a corpse.",
+    },
     ".apply_once": {
       type: "boolean",
       description: "Whether or not the effect will trigger for each targeted actor.",
@@ -740,6 +748,90 @@ export const GAME_MECHANICS_SCHEMA: {
       type: "string",
       description: "The type of the effect based DMG applied by the effect.",
     },
+    ".is_trigger_effect": {
+      type: "boolean",
+      description: "Decrements the trinket's trigger limit when triggered.",
+    },
+    ".trigger_limit_minimum_increase": {
+      type: "number",
+      description: "Increases the trinket's trigger limit by the inputted minimum amount.",
+      addInfo: "Used with .trigger_limit_maximum_increase to increase the trigger limit by a random amount. Used with the \"this_trinket\" target.",
+    },
+    ".trigger_limit_maximum_increase": {
+      type: "number",
+      description: "Increases the trinket's trigger limit by the inputted maximum amount.",
+      addInfo: "Used with .trigger_limit_minimum_increase to increase the trigger limit by a random amount. Used with the \"this_trinket\" target.",
+    },
+    ".gain_random_quirk_positive_percentage": {
+      type: "number",
+      description: "The percentage chance that a randomly gained quirk will be positive.",
+    },
+    ".gain_random_quirk_negative": {
+      type: "boolean",
+      description: "Guarantees a random negative quirk.",
+    },
+    ".gain_random_trinket": {
+      type: "string",
+      description: "References a loot table ID. Targets the estate trinket inventory.",
+      addInfo: "Used with the \"this_trinket\" target.",
+    },
+    ".gain_trinket": {
+      type: "string",
+      description: "References a trinket ID. The trinket is gained at combat end.",
+      addInfo: "Used with the \"this_trinket\" target.",
+    },
+    ".guaranteed_town_event": {
+      type: "boolean",
+      description: "Queues a random town event.",
+      addInfo: "The spreadsheet notes that it is unclear whether this works during a quest.",
+    },
+    ".dotBurn": {
+      type: "number",
+      commonName: "Burn",
+      description: "The amount of Burn damage over time applied by the effect.",
+      addInfo: "Critical hits increase the amount of Burn applied by 50%.",
+    },
+    ".dot_irresistible": {
+      type: "boolean",
+      description: "Makes damage-over-time effects impossible to resist.",
+    },
+    ".requires_burning_target": {
+      type: "boolean",
+      description: "The effect is only valid when being applied to a burning target.",
+    },
+    ".requires_not_burning_target": {
+      type: "boolean",
+      description: "The effect is only valid when being applied to a target that is not burning.",
+    },
+    ".is_in_inventory": {
+      type: "boolean",
+      description: "Allows a trinket effect to trigger while the trinket is not equipped.",
+    },
+    ".bonus_action_next_turn": {
+      type: "boolean",
+      description: "Used with .initiative_change to force an extra action to happen immediately.",
+    },
+    ".cure_burn": {
+      type: "number",
+      description: "The amount of Burn cured.",
+    },
+    ".controlled_burn_amount": {
+      type: "number",
+      description: "Activates controlled Burn and applies the inputted amount of Burn damage over time.",
+    },
+    ".controlled_burn_duration": {
+      type: "number",
+      description: "Activates controlled Burn for the inputted number of rounds.",
+    },
+    ".requires_kill_target": {
+      type: "boolean",
+      description: "The effect is only valid if the performer kills the target.",
+    },
+    ".destroy_trinket": {
+      type: "boolean",
+      description: "Destroys the trinket.",
+      addInfo: "Used with the \"this_trinket\" target.",
+    },
     ".damage_source_type": {
       type: "string",
       description: "The source of the effect based DMG applied by the effect.",
@@ -754,6 +846,19 @@ export const GAME_MECHANICS_SCHEMA: {
     ".id": {
       type: "string",
       description: "The Skill's ID.",
+    },
+    ".requires_burning": {
+      type: "boolean",
+      description: "Only burning units can be targeted by the skill.",
+    },
+    ".dmg_per_burn_stack": {
+      type: "number",
+      description: "Adds the specified damage percentage per Burn stack on the target.",
+      addInfo: "For example, .dmg_per_burn_stack 0.25 gives +250% damage against a target with 10 Burn stacks.",
+    },
+    ".copy_burn_behind": {
+      type: "boolean",
+      description: "Adds the target behind the primary target to the attack, applies Burn equal to the amount on the first target to them, and cures Burn on the first target.",
     },
     ".dmg": {
       type: "string",
@@ -1214,10 +1319,46 @@ export const GAME_MECHANICS_SCHEMA: {
     },
   },
   skill: {
+    ".id": {
+      type: "string",
+      description: "The monster skill's ID.",
+    },
+    ".type": {
+      type: "string",
+      description: "The monster skill type, such as melee or ranged.",
+    },
+    ".atk": {
+      type: "number",
+      description: "The monster skill's base accuracy.",
+    },
     ".dmg": {
       type: "range",
       description: "The skill's DMG range.",
       canBeNull: true
+    },
+    ".crit": {
+      type: "number",
+      description: "The monster skill's base CRIT chance.",
+    },
+    ".launch": {
+      type: "string",
+      description: "The ranks from which the monster can use this skill.",
+    },
+    ".target": {
+      type: "string",
+      description: "The ranks this monster skill can target.",
+    },
+    ".move": {
+      type: "range",
+      description: "The rank movement values for this monster skill.",
+    },
+    ".effect": {
+      type: "string_list",
+      description: "Effect IDs applied by this monster skill.",
+    },
+    ".is_crit_valid": {
+      type: "boolean",
+      description: "Whether critical hits are valid for this monster skill.",
     },
     ".starting_cooldown": {
       type: "number",
@@ -1259,7 +1400,201 @@ export const GAME_MECHANICS_SCHEMA: {
     ".can_display_skill_name": {
       type: "boolean",
       description: "Whether the skill name can be displayed",
-    }
+    },
+    ".requires_burning": {
+      type: "boolean",
+      description: "Only burning units can be targeted by the skill.",
+    },
+    ".dmg_per_burn_stack": {
+      type: "number",
+      description: "Adds the specified damage percentage per Burn stack on the target.",
+      addInfo: "For example, .dmg_per_burn_stack 0.25 gives +250% damage against a target with 10 Burn stacks.",
+    },
+    ".copy_burn_behind": {
+      type: "boolean",
+      description: "Adds the target behind the primary target to the attack, applies Burn equal to the amount on the first target to them, and cures Burn on the first target.",
+    },
+    ".level": {
+      type: "number",
+      description: "Determines which level of the skill is being modified by the line.",
+      addInfo: "If not present in a line, all levels of the skill will be modified by the line."
+    },
+    ".per_battle_limit": {
+      type: "number",
+      description: "The number of times the Skill can be used in a Battle.",
+    },
+    ".per_turn_limit": {
+      type: "number",
+      description: "The number of times the Skill can be used in a turn.", 
+      addInfo: "Only affects Free Action. Free Action attacks disregard this parameter.",
+    },
+    ".is_continue_turn": {
+      type: "boolean",
+      description: "Whether or not the Skill is a Free Action. Does not end the performer's turn.",
+      addInfo: "Highly unrecommended for Attack skills as it has many bugs.",
+    },
+    ".self_target_valid": {
+      type: "boolean",
+      description: "Whether or not the Skill can target the performer.",
+    },
+    ".valid_modes": {
+      type: "string_list",
+      description: "The modes the Skill is usable in.",
+    },
+    ".ignore_stealth": {
+      type: "boolean",
+      description: "Whether or not the Skill ignores Stealth.",
+    },
+    ".ignore_guard": {
+      type: "boolean",
+      description: "Whether or not the Skill ignores Guard.",
+    },
+    ".ignore_riposte": {
+      type: "boolean",
+      description: "Whether or not the Skill Ignores Riposte.",
+    },
+    ".ignore_protection": {
+      type: "boolean",
+      description: "Whether or not the Skill ignores PROT.",
+    },
+    ".can_miss": {
+      type: "boolean",
+      description: "Whether or not the Skill can miss at all.",
+    },
+    ".can_be_riposted": {
+      type: "boolean",
+      description: "Whether or not the Skill can be riposted.",
+      addInfo: "Essentially the same as `.ignore_riposte true`, unsure if used."
+    },
+    ".required_performer_hp_range": {
+      type: "range",
+      description: "The HP Range in which the Skill is usable.",
+    },
+    ".rank_damage_modifiers": {
+      type: "number_list",
+      description: "The Skill's DMG modifier for against each specific rank.",
+    },
+    ".heal": {
+      type: "range",
+      description: "The Skill's Healing Range.",
+    },
+    ".can_crit_heal": {
+      type: "boolean",
+      description: "Whether or not the Skill can CRIT Heal.",
+    },
+    ".generation_guaranteed": {
+      type: "boolean",
+      description: "Whether or not the hero is guaranteed to start with the skill.",
+      addInfo: "If there are multiple skills with this set to true, only the top 1 will be guaranteed"
+    },
+    ".is_stall_invalidating": {
+      type: "boolean",
+      description: "Whether or not the skill will counts as stalling when used.",
+    },
+    ".refresh_after_each_wave": {
+      type: "boolean",
+      description: "Whether or not the the skill's use number refreshes after each wave of a wave quest.",
+    },
+    ".damage_heal_base_class_ids": {
+      type: "string_list",
+      description: "The actors with the given IDs will be healing a certain percentage based on the DMG dealt.",
+    },
+    ".icon": {
+      type: "string",
+      description: "The name of the skill icon used by the skill.",
+    },
+    ".anim": {
+      type: "string",
+      description: "The name of the animation used by the skill.",
+    },
+    ".fx": {
+      type: "string",
+      description: "The name of the VFX used by the skill, targets the performer.",
+    },
+    ".targfx": {
+      type: "string",
+      description: "The name of the target VFX of the skill.",
+    },
+    ".targheadfx": {
+      type: "string",
+      description: "Target head effect name",
+    },
+    ".targchestfx": {
+      type: "string",
+      description: "Target chest effect name",
+    },
+    ".misstargfx": {
+      type: "string",
+      description: "Missed target effect name",
+    },
+    ".misstargheadfx": {
+      type: "string",
+      description: "Missed target head effect name",
+    },
+    ".misstargchestfx": {
+      type: "string",
+      description: "Missed target chest effect name",
+    },
+    ".area_pos_offset": {
+      type: "range",
+      description: "Area position offset (X, Y)",
+    },
+    ".target_area_pos_offset": {
+      type: "range",
+      description: "Target area position offset (X, Y)",
+    },
+    ".reset_source_stance": {
+      type: "boolean",
+      description: "Whether the source stance is reset",
+    },
+    ".reset_target_stance": {
+      type: "boolean",
+      description: "Whether the target stance is reset",
+    },
+    ".can_display_selection": {
+      type: "boolean",
+      description: "Whether the selection can be displayed",
+    },
+    ".hide_performer_health": {
+      type: "boolean",
+      description: "Whether the performer's health is hidden",
+    },
+    ".condensed_tooltip_effects": {
+      type: "boolean",
+      description: "Whether effects are condensed in the tooltip",
+    },
+    ".condensed_tooltip_stats": {
+      type: "boolean",
+      description: "Whether stats are condensed in the tooltip",
+    },
+    ".condensed_tooltip_type": {
+      type: "boolean",
+      description: "Whether type is condensed in the tooltip",
+    },
+    ".condensed_tooltip_effects_per_line": {
+      type: "number",
+      description: "Number of effects per line in the tooltip",
+    },
+    ".nil": {
+      type: "boolean",
+      description: "Hides skill stats and other information",
+    },
+    ".custom_target_anim": {
+      type: "string",
+      description: "Custom target animation name",
+    },
+    ".custom_idle_anim_name": {
+      type: "string",
+      description: "Custom idle animation name",
+    },
+    ".custom_idle_round_duration": {
+      type: "number",
+      description: "Custom idle round duration",
+    },
+    ".can_display_performer_selection_after_turn": {
+      type: "boolean",
+      description: "Whether performer selection can be displayed after turn",
+    },
   },
   riposte_skill: {
     ".id": {
@@ -1431,6 +1766,10 @@ export const GAME_MECHANICS_SCHEMA: {
       type: "string",
       description: "The unique identifier for the mode.",
       required: true
+    },
+    ".battle_start_effect_ids": {
+      type: "string_list",
+      description: "Effects applied to the unit at combat start.",
     },
     ".is_raid_default": {
       type: "boolean",
@@ -1909,6 +2248,10 @@ export const GAME_MECHANICS_SCHEMA: {
       type: "boolean",
       description: "Whether or not the monster will change IDs on if the death blow was a Blight DOT tick."
     },
+    ".is_valid_on_burn_dot": {
+      type: "boolean",
+      description: "Causes the monster to leave a corpse when dying to Burn damage.",
+    },
     ".can_die_from_damage": {
       type: "boolean"
     },
@@ -1981,6 +2324,59 @@ export const GAME_MECHANICS_SCHEMA: {
     ".max": {
       type: "number",
       description: "The maximum light level while the monster is alive."
+    },
+  },
+  audio_modifier: {
+    ".ambience_parameter_ids": {
+      type: "string_list",
+      description: "List of ambience parameter IDs, such as crowd.",
+    },
+    ".ambience_parameter_values": {
+      type: "number_list",
+      description: "List of numeric values corresponding to the ambience parameter IDs.",
+    },
+  },
+  display_modifier: {
+    ".disabled_popup_text_types": {
+      type: "string_list",
+      allowed_values: [
+        "no_damage",
+        "damage",
+        "hero_heal",
+        "monster_heal",
+        "buff",
+        "debuff",
+        "poison",
+        "bleed",
+        "cured",
+        "tagged",
+        "stun",
+        "poison_resist",
+        "stun_resist",
+        "bleed_resist",
+        "resist",
+      ],
+      description: "Popup text types that should be disabled.",
+    },
+    ".disable_halos": {
+      type: "boolean",
+      description: "Disables halos when true.",
+    },
+    ".show_spawn_fx": {
+      type: "boolean",
+      description: "Whether spawn visual effects are shown.",
+    },
+    ".disable_health": {
+      type: "boolean",
+      description: "Disables health display when true.",
+    },
+    ".anim_override": {
+      type: "string",
+      description: "Overrides the display animation. Examples include weak and berserk.",
+    },
+    ".use_centre_skill_announcement": {
+      type: "boolean",
+      description: "Enables the centered skill announcement when true.",
     },
   },
   controller: {

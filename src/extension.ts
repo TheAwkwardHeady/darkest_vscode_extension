@@ -8,12 +8,285 @@ import { checkIfEffectFile, addEffect, addEffectParameter } from "./effectCreati
 import { DarkestCompletionItemProvider } from "./completion-item-provider";
 import { checkIfLocFile, updateZWSP, createZWSP, createTooltipString } from "./locTools";
 import { checkIfBuffFile, createTooltipBuff, createBuff } from "./buffTools";
+import { BuffSchemaCompletionProvider, allStatTypes, statSubtypesByType, ruleTypes, durationTypes } from "./buffSchemaCompletion";
 
 let modes: string[] = [];
 
 const effectTriggerOrder = ".apply_with_result true -> .apply_with_result true on a Trinket -> Regular Effect -> Regular Effect on a Trinket -> .queue true -> .queue true on a Trinket";
 
 export function activate(context: vscode.ExtensionContext) {
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand("darkest.chooseBuffValue", async () => {
+      const editor = vscode.window.activeTextEditor;
+      if (!editor || !/\.buffs\.json$/i.test(editor.document.fileName)) {
+        vscode.window.showWarningMessage("Choose Buff Value is only available in .buffs.json files.");
+        return;
+      }
+
+      const document = editor.document;
+      const position = editor.selection.active;
+      const line = document.lineAt(position.line).text;
+      const keyMatch = /"(stat_type|stat_sub_type|rule_type|duration_type)"\s*:\s*"([^"]*)"/.exec(line);
+      if (!keyMatch) {
+        vscode.window.showInformationMessage("Place the cursor inside a stat_type, stat_sub_type, rule_type, or duration_type string.");
+        return;
+      }
+
+      const key = keyMatch[1];
+      const valueStart = line.indexOf('"', keyMatch.index + keyMatch[0].indexOf(':')) + 1;
+      const valueEnd = line.indexOf('"', valueStart);
+      let choices: { value: string; detail?: string }[] = [];
+      if (key === "stat_type") {
+        choices = allStatTypes.map(value => ({ value }));
+      } else if (key === "stat_sub_type") {
+        const textBefore = document.getText(new vscode.Range(new vscode.Position(0, 0), position));
+        const objectStart = textBefore.lastIndexOf("{");
+        const objectText = textBefore.slice(objectStart >= 0 ? objectStart : 0);
+        const typeMatch = /"stat_type"\s*:\s*"([^"]+)"/.exec(objectText);
+        const statType = typeMatch?.[1];
+        choices = statType ? (statSubtypesByType[statType] ?? []).map(item => ({ value: item.value, detail: item.detail })) : [];
+        // Stat types without a defined subtype list use an empty string.
+        choices.push({ value: "", detail: "Empty subtype" });
+      } else if (key === "rule_type") {
+        choices = ruleTypes;
+      } else if (key === "duration_type") {
+        choices = durationTypes;
+      }
+
+      if (choices.length === 0) {
+        vscode.window.showInformationMessage(`No known values are configured for ${key} in this context.`);
+        return;
+      }
+
+      const selected = await vscode.window.showQuickPick(
+        choices.map(item => ({ label: item.value || '(empty string)', description: item.detail })),
+        { placeHolder: `Search ${key} values`, matchOnDescription: true }
+      );
+      if (!selected) return;
+      const replacement = selected.label === '(empty string)' ? "" : selected.label;
+      await editor.edit(edit => edit.replace(
+        new vscode.Range(new vscode.Position(position.line, valueStart), new vscode.Position(position.line, valueEnd)),
+        replacement
+      ));
+    })
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand("darkest.createBuffEntry", async () => {
+      const editor = vscode.window.activeTextEditor;
+      if (!editor) return;
+
+      const document = editor.document;
+      if (!/\.buffs\.json$/i.test(document.fileName)) {
+        vscode.window.showWarningMessage("Create Buff Entry is only available in .buffs.json files.");
+        return;
+      }
+
+      const text = document.getText();
+      let parsed: unknown;
+      try {
+        parsed = JSON.parse(text);
+      } catch {
+        vscode.window.showErrorMessage("The buff JSON must be valid before a new buff can be added.");
+        return;
+      }
+      if (!parsed || typeof parsed !== "object" || !Array.isArray((parsed as { buffs?: unknown }).buffs)) {
+        vscode.window.showErrorMessage('This file must contain a "buffs" array.');
+        return;
+      }
+
+      const keyMatch = /"buffs"\s*:\s*\[/g.exec(text);
+      if (!keyMatch) {
+        vscode.window.showErrorMessage('Could not locate the "buffs" array.');
+        return;
+      }
+      const openBracket = text.indexOf("[", keyMatch.index);
+      let depth = 0;
+      let inString = false;
+      let escaped = false;
+      let closeBracket = -1;
+      for (let i = openBracket; i < text.length; i++) {
+        const ch = text[i];
+        if (inString) {
+          if (escaped) escaped = false;
+          else if (ch === "\\") escaped = true;
+          else if (ch === '"') inString = false;
+          continue;
+        }
+        if (ch === '"') inString = true;
+        else if (ch === "[") depth++;
+        else if (ch === "]" && --depth === 0) { closeBracket = i; break; }
+      }
+      if (closeBracket < 0) {
+        vscode.window.showErrorMessage('Could not locate the end of the "buffs" array.');
+        return;
+      }
+
+      const template = `      {\n         "id" : "YOUR_BUFF_ID",\n         "stat_type" : "upgrade_discount",\n         "stat_sub_type" : "",\n         "amount" : 0,\n         "remove_if_not_active" : false,\n         "rule_type" : "always",\n         "is_false_rule" : false,\n         "rule_data" : {\n            "float" : 0,\n            "string" : ""\n         }\n      }`;
+      const beforeClose = text.slice(openBracket + 1, closeBracket);
+      const lastContentIndex = beforeClose.search(/\S(?=\s*$)/);
+      let insertionOffset: number;
+      let insertionText: string;
+      if (lastContentIndex < 0) {
+        // Insert just inside the opening bracket so both inline [] and multiline arrays work.
+        insertionOffset = openBracket + 1;
+        insertionText = `\n${template}\n`;
+      } else {
+        insertionOffset = openBracket + 1 + lastContentIndex + 1;
+        insertionText = `,\n${template}`;
+      }
+      await editor.edit(editBuilder => editBuilder.insert(document.positionAt(insertionOffset), insertionText));
+    })
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand("darkest.createTrinketEntry", async () => {
+      const editor = vscode.window.activeTextEditor;
+      if (!editor) {
+        return;
+      }
+
+      const document = editor.document;
+      if (!/\.entries\.trinkets\.json$/i.test(document.fileName)) {
+        vscode.window.showWarningMessage("Create Trinket Entry is only available in .entries.trinkets.json files.");
+        return;
+      }
+
+      const text = document.getText();
+      let parsed: unknown;
+      try {
+        parsed = JSON.parse(text);
+      } catch {
+        vscode.window.showErrorMessage("The trinket JSON must be valid before a new entry can be added.");
+        return;
+      }
+
+      if (!parsed || typeof parsed !== "object" || !Array.isArray((parsed as { entries?: unknown }).entries)) {
+        vscode.window.showErrorMessage('This file must contain an "entries" array.');
+        return;
+      }
+
+      const entries = (parsed as { entries: unknown[] }).entries;
+      const keyMatch = /"entries"\s*:\s*\[/g.exec(text);
+      if (!keyMatch) {
+        vscode.window.showErrorMessage('Could not locate the "entries" array.');
+        return;
+      }
+      const openBracket = text.indexOf("[", keyMatch.index);
+      let depth = 0;
+      let inString = false;
+      let escaped = false;
+      let closeBracket = -1;
+      for (let i = openBracket; i < text.length; i++) {
+        const ch = text[i];
+        if (inString) {
+          if (escaped) escaped = false;
+          else if (ch === "\\") escaped = true;
+          else if (ch === '"') inString = false;
+          continue;
+        }
+        if (ch === '"') inString = true;
+        else if (ch === "[") depth++;
+        else if (ch === "]" && --depth === 0) {
+          closeBracket = i;
+          break;
+        }
+      }
+      if (closeBracket < 0) {
+        vscode.window.showErrorMessage('Could not locate the end of the "entries" array.');
+        return;
+      }
+
+      const template = `      {\n         "id" : "YOUR_TRINKET_ID",\n         "buffs" :\n         [\n\n         ],\n         "hero_class_requirements":\n         [\n\n         ],\n         "rarity" : "uncommon",\n         "price" : 10000,\n         "limit" : 1,\n         "origin_dungeon" : ""\n      }`;
+      const beforeClose = text.slice(openBracket + 1, closeBracket);
+      const lastContentIndex = beforeClose.search(/\S(?=\s*$)/);
+      let insertionOffset: number;
+      let insertionText: string;
+      if (lastContentIndex < 0) {
+        const closeLineStart = text.lastIndexOf("\n", closeBracket) + 1;
+        insertionOffset = closeLineStart;
+        insertionText = `${template}\n`;
+      } else {
+        const lastCharOffset = openBracket + 1 + lastContentIndex;
+        insertionOffset = lastCharOffset + 1;
+        insertionText = `,\n${template}`;
+      }
+
+      await editor.edit(editBuilder => {
+        editBuilder.insert(document.positionAt(insertionOffset), insertionText);
+      });
+    })
+  );
+
+  const entryValidationCollection = vscode.languages.createDiagnosticCollection("darkest-entry-validation");
+  context.subscriptions.push(entryValidationCollection);
+  const validateJsonEntries = (document: vscode.TextDocument) => {
+    const fileName = document.fileName.toLowerCase();
+    const isBuffs = fileName.endsWith(".buffs.json");
+    const isTrinkets = fileName.endsWith(".entries.trinkets.json");
+    if (!isBuffs && !isTrinkets) return;
+    const text = document.getText();
+    const diagnostics: vscode.Diagnostic[] = [];
+    try {
+      JSON.parse(text);
+      const arrayName = isBuffs ? "buffs" : "entries";
+      const arrayMatch = new RegExp('"' + arrayName + '"\\s*:\\s*\\[').exec(text);
+      if (arrayMatch) {
+        const arrayStart = arrayMatch.index + arrayMatch[0].length;
+        let inString = false, escaped = false, depth = 0, objectStart = -1;
+        const required = isBuffs
+          ? ["id", "stat_type", "stat_sub_type", "amount", "rule_type", "rule_data"]
+          : ["id", "buffs", "hero_class_requirements", "rarity", "limit", "origin_dungeon"];
+        for (let i = arrayStart; i < text.length; i++) {
+          const ch = text[i];
+          if (inString) { if (escaped) escaped = false; else if (ch === "\\") escaped = true; else if (ch === '"') inString = false; continue; }
+          if (ch === '"') { inString = true; continue; }
+          if (ch === "[") { if (depth === 0) break; depth++; }
+          else if (ch === "]") { if (depth === 0) break; depth--; }
+          else if (ch === "{") { if (depth === 0) objectStart = i; depth++; }
+          else if (ch === "}") {
+            depth--;
+            if (depth === 0 && objectStart >= 0) {
+              const entryText = text.slice(objectStart, i + 1);
+              const missing = required.filter(key => !new RegExp('"' + key + '"\\s*:').test(entryText));
+              const entryRange = new vscode.Range(document.positionAt(objectStart), document.positionAt(i + 1));
+              if (missing.length) {
+                const diagnostic = new vscode.Diagnostic(entryRange, `Invalid ${isBuffs ? "buff" : "trinket"} entry. Missing required fields: ${missing.map(k => '`' + k + '`').join(", ")}.`, vscode.DiagnosticSeverity.Error);
+                diagnostic.code = "missing-required-entry-fields";
+                diagnostics.push(diagnostic);
+              }
+              if (isBuffs) {
+                try {
+                  const entry = JSON.parse(entryText) as { rule_type?: unknown };
+                  const allowedRuleTypes = ruleTypes.map(item => item.value);
+                  if (typeof entry.rule_type !== "string" || !allowedRuleTypes.includes(entry.rule_type)) {
+                    const ruleMatch = /"rule_type"\s*:\s*("(?:\\.|[^"\\])*"|[^,}\s]*)/.exec(entryText);
+                    const ruleStart = ruleMatch ? objectStart + ruleMatch.index : objectStart;
+                    const ruleEnd = ruleMatch ? ruleStart + ruleMatch[0].length : i + 1;
+                    const ruleRange = new vscode.Range(document.positionAt(ruleStart), document.positionAt(ruleEnd));
+                    const message = `Invalid rule_type '${String(entry.rule_type ?? "missing")}'. This value can crash the game. Use a supported rule_type.`;
+                    const propertyDiagnostic = new vscode.Diagnostic(ruleRange, message, vscode.DiagnosticSeverity.Error);
+                    propertyDiagnostic.code = "invalid-buff-rule-type";
+                    diagnostics.push(propertyDiagnostic);
+                    const entryDiagnostic = new vscode.Diagnostic(entryRange, `Invalid buff entry: rule_type '${String(entry.rule_type ?? "missing")}' is not supported and may crash the game.`, vscode.DiagnosticSeverity.Error);
+                    entryDiagnostic.code = "invalid-buff-rule-type-entry";
+                    diagnostics.push(entryDiagnostic);
+                  }
+                } catch { /* JSON syntax errors are reported by the JSON language service. */ }
+              }
+              objectStart = -1;
+            }
+          }
+        }
+      }
+    } catch { /* Let the JSON language service report syntax errors. */ }
+    entryValidationCollection.set(document.uri, diagnostics);
+  };
+  for (const document of vscode.workspace.textDocuments) validateJsonEntries(document);
+  context.subscriptions.push(vscode.workspace.onDidOpenTextDocument(validateJsonEntries));
+  context.subscriptions.push(vscode.workspace.onDidChangeTextDocument(event => validateJsonEntries(event.document)));
+
   const collection = vscode.languages.createDiagnosticCollection("darkest");
   if (vscode.window.activeTextEditor) {
     throttledUpdateDiagnostics(
@@ -70,6 +343,13 @@ export function activate(context: vscode.ExtensionContext) {
       "darkest",
       new DarkestCompletionItemProvider(),
       ".",
+      '"'
+    )
+  );
+  context.subscriptions.push(
+    vscode.languages.registerCompletionItemProvider(
+      { language: "json", scheme: "file" },
+      new BuffSchemaCompletionProvider(),
       '"'
     )
   );
@@ -2157,7 +2437,32 @@ async function updateDiagnostics(
           const valueValidation = validator(value, expectedType);
           const isAllowed = isAllowedValue(value, allowedValues);
           const canBeNull = gameMechanicsSchema[keyword][param].canBeNull;
-          if ((!valueValidation.isValid || !isAllowed) && !canBeNull) {
+          const isEmptyDynamicModeEffects =
+            value.length === 0 &&
+            param.endsWith("_effects") &&
+            modes.some((mode) => param === `.${mode}_effects`);
+          const isIntentionallyBlankParameter =
+            value.length === 0 &&
+            (param === ".effect" ||
+              param === ".target" ||
+              isEmptyDynamicModeEffects);
+
+          if (isIntentionallyBlankParameter) {
+            const warningMessage = isEmptyDynamicModeEffects
+              ? `No effect IDs provided for \`${param}\`. This may be intentional.`
+              : `No value provided for \`${param}\`. This may be intentional.`;
+            const diagnostic = new vscode.Diagnostic(
+              new vscode.Range(
+                line.lineNumber,
+                index,
+                line.lineNumber,
+                index + paramAndValue.length
+              ),
+              warningMessage,
+              vscode.DiagnosticSeverity.Warning
+            );
+            diagnostics.push(diagnostic);
+          } else if ((!valueValidation.isValid || !isAllowed) && !canBeNull) {
             const diagnostic = new vscode.Diagnostic(
               new vscode.Range(
                 line.lineNumber,

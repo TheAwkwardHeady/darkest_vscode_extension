@@ -1,0 +1,260 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://darkest-vscode-extension.local/schemas/entries-trinkets.schema.json",
+  "title": "Darkest Dungeon Trinket Entries",
+  "description": "Structure assistance for *.entries.trinkets.json files. Properties are intentionally not all required because existing game/mod trinkets use different optional fields. Unknown properties are allowed to preserve compatibility with additional game fields.",
+  "type": "object",
+  "required": [
+    "entries"
+  ],
+  "properties": {
+    "entries": {
+      "type": "array",
+      "description": "Trinket definitions.",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "buffs",
+          "hero_class_requirements",
+          "rarity",
+          "limit",
+          "origin_dungeon"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique trinket identifier."
+          },
+          "buffs": {
+            "type": "array",
+            "description": "Buff IDs applied by this trinket. Cross-file ID validation is planned for a later phase.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "hero_class_requirements": {
+            "type": "array",
+            "description": "Hero class IDs allowed to use this trinket.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "rarity": {
+            "type": "string",
+            "description": "Trinket rarity/category. Any string is allowed; the values below are examples found in the supplied base-game reference files, not a restricted list: ancestral, ancestral_shambler, collector, common, courtier, crow, darkest_dungeon, kickstarter, madman, rare, trophy, uncommon, very_common, very_rare, runaway."
+          },
+          "visual_rarity": {
+            "type": "string",
+            "description": "Visual rarity override, when used."
+          },
+          "price": {
+            "type": "integer",
+            "description": "Trinket purchase/sale price."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Trinket equip limit; 0 is used for unlimited in the provided examples."
+          },
+          "origin_dungeon": {
+            "type": "string",
+            "description": "Dungeon ID or empty string."
+          },
+          "quest_uses": {
+            "type": "integer",
+            "description": "Number of quest uses before the trinket is destroyed."
+          },
+          "trigger_limit": {
+            "type": "integer",
+            "description": "Number of triggers available."
+          },
+          "blocks_other_slot_trigger_expend": {
+            "type": "boolean",
+            "description": "When enabled, prevents this trinket's trigger use from being expended by a trigger in the other trinket slot."
+          },
+          "blocks_other_slot_quest_uses_expend": {
+            "type": "boolean",
+            "description": "When enabled, prevents this trinket's quest uses from being expended by a quest-use event in the other trinket slot."
+          },
+          "transform_on_quest_complete": {
+            "type": "string",
+            "description": "Trinket ID to transform into on quest completion."
+          },
+          "transform_on_wearer_killed": {
+            "type": "string",
+            "description": "Trinket ID to transform into when the wearer is killed."
+          },
+          "transform_on_trigger_limit_exhausted": {
+            "type": "string",
+            "description": "Trinket ID to transform into when trigger uses are exhausted."
+          },
+          "trigger_progressive_art": {
+            "type": "boolean",
+            "description": "Enables progressive art changes as the trinket's trigger uses are consumed."
+          },
+          "quest_progressive_art": {
+            "type": "boolean",
+            "description": "Enables progressive art changes as the trinket's quest uses are consumed."
+          },
+          "destroy_on_triggers_exhausted": {
+            "type": "boolean",
+            "description": "Destroys the trinket when its trigger limit is exhausted."
+          },
+          "quest_complete_resolve_xp": {
+            "type": "integer",
+            "description": "Resolve XP awarded when the quest is completed."
+          },
+          "attack_skill_additional_effects": {
+            "type": "array",
+            "description": "On Attack (target: monster)",
+            "items": {
+              "type": "string"
+            }
+          },
+          "kill_performer_additional_effects": {
+            "type": "array",
+            "description": "On Monster Kill (target: hero)",
+            "items": {
+              "type": "string"
+            }
+          },
+          "riposte_skill_additional_effects": {
+            "type": "array",
+            "description": "On Riposte (target: monster)",
+            "items": {
+              "type": "string"
+            }
+          },
+          "battle_finished_successfully_additional_effects": {
+            "type": "array",
+            "description": "On Combat End",
+            "items": {
+              "type": "string"
+            }
+          },
+          "friendly_skill_additional_effects": {
+            "type": "array",
+            "description": "Friendly Skill (target: ally)",
+            "items": {
+              "type": "string"
+            }
+          },
+          "on_dodge_additional_effects": {
+            "type": "array",
+            "description": "On Dodge",
+            "items": {
+              "type": "string"
+            }
+          },
+          "round_end_additional_effects": {
+            "type": "array",
+            "description": "On Round End",
+            "items": {
+              "type": "string"
+            }
+          },
+          "was_hit_additional_effects": {
+            "type": "array",
+            "description": "Hero Was Hit (target: attacker | performer: hero)",
+            "items": {
+              "type": "string"
+            }
+          },
+          "riposte_kill_additional_effects": {
+            "type": "array",
+            "description": "On Riposte Kill",
+            "items": {
+              "type": "string"
+            }
+          },
+          "riposte_crit_additional_effects": {
+            "type": "array",
+            "description": "On Riposte Crit",
+            "items": {
+              "type": "string"
+            }
+          },
+          "on_quest_complete_additional_effects": {
+            "type": "array",
+            "description": "On Quest Complete",
+            "items": {
+              "type": "string"
+            }
+          },
+          "turn_end_additional_effects": {
+            "type": "array",
+            "description": "On Turn End",
+            "items": {
+              "type": "string"
+            }
+          },
+          "kill_all_monsters_additional_effects": {
+            "type": "array",
+            "description": "On Monster Kill (target: all monsters)",
+            "items": {
+              "type": "string"
+            }
+          },
+          "kill_all_heroes_additional_effects": {
+            "type": "array",
+            "description": "On Monster Kill (target: party)",
+            "items": {
+              "type": "string"
+            }
+          },
+          "was_killed_all_heroes_additional_effects": {
+            "type": "array",
+            "description": "Hero Killed (target: party)",
+            "items": {
+              "type": "string"
+            }
+          },
+          "was_killed_all_monsters_additional_effects": {
+            "type": "array",
+            "description": "Hero Killed (target: all monsters)",
+            "items": {
+              "type": "string"
+            }
+          },
+          "was_hit_all_heroes_additional_effects": {
+            "type": "array",
+            "description": "Hero Was Hit (target: party | performer: hero)",
+            "items": {
+              "type": "string"
+            }
+          },
+          "was_hit_all_monsters_additional_effects": {
+            "type": "array",
+            "description": "Hero Was Hit (target: all monsters | performer: hero)",
+            "items": {
+              "type": "string"
+            }
+          },
+          "melee_attack_skill_additional_effects": {
+            "type": "array",
+            "description": "On Melee Attack (target: monster)",
+            "items": {
+              "type": "string"
+            }
+          },
+          "ranged_attack_skill_additional_effects": {
+            "type": "array",
+            "description": "On Ranged Attack (target: monster)",
+            "items": {
+              "type": "string"
+            }
+          },
+          "attack_crit_additional_effects": {
+            "type": "array",
+            "description": "On Crit (target: monster)",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true
+}
