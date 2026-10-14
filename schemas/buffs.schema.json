@@ -97,6 +97,7 @@
               "shuffle_dot_duration_received_percent",
               "starving_damage_percent",
               "status",
+              "tag",
               "stress_dmg_percent",
               "stress_dmg_received_percent",
               "stress_dot_amount_percent",

@@ -6,6 +6,7 @@ import { validator } from "./valueValidation";
 import { gatherModes } from "./modeValidation";
 import { checkIfEffectFile, addEffect, addEffectParameter } from "./effectCreation";
 import { DarkestCompletionItemProvider } from "./completion-item-provider";
+import { registerEffectReferenceFeatures } from "./effectReferenceFeatures";
 import { checkIfLocFile, updateZWSP, createZWSP, createTooltipString } from "./locTools";
 import { checkIfBuffFile, createTooltipBuff, createBuff } from "./buffTools";
 import { BuffSchemaCompletionProvider, allStatTypes, statSubtypesByType, ruleTypes, durationTypes } from "./buffSchemaCompletion";
@@ -15,6 +16,7 @@ let modes: string[] = [];
 const effectTriggerOrder = ".apply_with_result true -> .apply_with_result true on a Trinket -> Regular Effect -> Regular Effect on a Trinket -> .queue true -> .queue true on a Trinket";
 
 export function activate(context: vscode.ExtensionContext) {
+  registerEffectReferenceFeatures(context);
 
   context.subscriptions.push(
     vscode.commands.registerCommand("darkest.chooseBuffValue", async () => {
@@ -237,7 +239,7 @@ export function activate(context: vscode.ExtensionContext) {
         let inString = false, escaped = false, depth = 0, objectStart = -1;
         const required = isBuffs
           ? ["id", "stat_type", "stat_sub_type", "amount", "rule_type", "rule_data"]
-          : ["id", "buffs", "hero_class_requirements", "rarity", "limit", "origin_dungeon"];
+          : ["id", "buffs", "hero_class_requirements", "rarity", "limit"];
         for (let i = arrayStart; i < text.length; i++) {
           const ch = text[i];
           if (inString) { if (escaped) escaped = false; else if (ch === "\\") escaped = true; else if (ch === '"') inString = false; continue; }
@@ -308,6 +310,24 @@ export function activate(context: vscode.ExtensionContext) {
       }
     })
   );
+  context.subscriptions.push(vscode.languages.registerCodeActionsProvider("darkest", {
+    provideCodeActions(document, range, codeActionContext) {
+      if (codeActionContext.diagnostics.length === 0) return undefined;
+      const lineNumber = range.start.line;
+      if (lineNumber > 0 && document.lineAt(lineNumber - 1).text.trim() === "// @darkest-ignore") return undefined;
+
+      const action = new vscode.CodeAction(
+        "Ignore Darkest warnings on this line",
+        vscode.CodeActionKind.QuickFix,
+      );
+      const edit = new vscode.WorkspaceEdit();
+      const newline = document.eol === vscode.EndOfLine.CRLF ? "\r\n" : "\n";
+      edit.insert(document.uri, new vscode.Position(lineNumber, 0), `// @darkest-ignore${newline}`);
+      action.edit = edit;
+      action.diagnostics = [...codeActionContext.diagnostics];
+      return [action];
+    },
+  }));
   context.subscriptions.push(
     vscode.commands.registerCommand("darkest.getGameMechanicsSchema", () => {
       const schema = JSON.parse(JSON.stringify(GAME_MECHANICS_SCHEMA));
@@ -2358,9 +2378,7 @@ async function updateDiagnostics(
         continue;
       }
 
-      const isLineValid = /^\w+:(\s+\.[a-zA-Z0-9_]+(\s+[^\s.][^\s]*)*)+$/.test(
-        lineText
-      );
+      const isLineValid = /^\w+:\s*\.[a-zA-Z0-9_]+(?:\s+(?:"(?:\\.|[^"\\])*"|[^\s.]+))*(?:\s*\.[a-zA-Z0-9_]+(?:\s+(?:"(?:\\.|[^"\\])*"|[^\s.]+))*)*\s*$/.test(lineText);
       if (!isLineValid) {
         const diagnostic = new vscode.Diagnostic(
           line.range,
@@ -2383,9 +2401,8 @@ async function updateDiagnostics(
         continue;
       }
 
-      const paramsAndValues = lineText.match(
-        /(\.[a-zA-Z0-9_]+)(\s+[^\s.][^\s]*)*/g
-      )!;
+      const paramsAndValues = [...lineText.matchAll(/(\.[a-zA-Z0-9_]+)((?:\s+(?:"(?:\\.|[^"\\])*"|[^\s.]+))*)/g)]
+        .map(match => match[0]);
 
       const missingParams = Object.entries(gameMechanicsSchema[keyword])
         .filter(([, s]) => "required" in s && s.required)

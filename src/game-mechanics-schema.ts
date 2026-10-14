@@ -2545,6 +2545,12 @@ export const GAME_MECHANICS_SCHEMA: {
       description: "Whether or not loot is pulled when the monster's life time expires"
     }
   },
+  defending_area_pos_offset: {
+    ".offset": {
+      type: "range",
+      description: "Defending area position offset (X, Y).",
+    },
+  },
   additional_effect: {
     ".is_valid_trinket_target": {
       type: "boolean",

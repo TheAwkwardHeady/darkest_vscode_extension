@@ -31,7 +31,7 @@ export const allStatTypes = [
   "shuffle_dot_duration_received_percent", "shuffle_dot_duration_percent", "guard_duration_received_percent", "guard_duration_percent",
   "cure_bleed_received_chance", "cure_poison_received_chance", "cure_bleed_chance", "cure_poison_chance",
   "random_target_friendly_chance", "random_target_attack_chance", "transfer_debuff_from_attacker_chance", "transfer_buff_from_attacker_chance",
-  "quirk_tag_evolution_duration", "deathblow_chance", "heartattack_stress_heal_percent", "ignore_guard", "buff_duration_percent",
+  "quirk_tag_evolution_duration", "deathblow_chance", "heartattack_stress_heal_percent", "ignore_guard", "buff_duration_percent", "tag",
   "riposte_duration_percent", "hp_dot_burn", "hp_dot_burn_decay_percent", "hp_dot_burn_amount_percent",
   "hp_dot_burn_amount_received_percent", "wildfire_apply_adjacent_targets", "cure_burn_chance", "cure_burn_received_chance"
 ];

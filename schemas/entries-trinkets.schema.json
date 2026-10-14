@@ -18,8 +18,7 @@
           "buffs",
           "hero_class_requirements",
           "rarity",
-          "limit",
-          "origin_dungeon"
+          "limit"
         ],
         "properties": {
           "id": {
