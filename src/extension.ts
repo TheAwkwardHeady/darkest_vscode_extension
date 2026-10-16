@@ -2378,7 +2378,9 @@ async function updateDiagnostics(
         continue;
       }
 
-      const isLineValid = /^\w+:\s*\.[a-zA-Z0-9_]+(?:\s+(?:"(?:\\.|[^"\\])*"|[^\s.]+))*(?:\s*\.[a-zA-Z0-9_]+(?:\s+(?:"(?:\\.|[^"\\])*"|[^\s.]+))*)*\s*$/.test(lineText);
+      const isNumericToken = "(?:[+-]?\\d+(?:\\.\\d+)?%?|[+-]?\\.\\d+%?)";
+      const isValueToken = `(?:"(?:\\\\.|[^"\\\\])*"|${isNumericToken}|[^\\s.]+)`;
+      const isLineValid = new RegExp(`^\\w+:\\s*\\.[a-zA-Z0-9_]+(?:\\s+${isValueToken})*(?:\\s*\\.[a-zA-Z0-9_]+(?:\\s+${isValueToken})*)*\\s*$`).test(lineText);
       if (!isLineValid) {
         const diagnostic = new vscode.Diagnostic(
           line.range,
@@ -2401,7 +2403,7 @@ async function updateDiagnostics(
         continue;
       }
 
-      const paramsAndValues = [...lineText.matchAll(/(\.[a-zA-Z0-9_]+)((?:\s+(?:"(?:\\.|[^"\\])*"|[^\s.]+))*)/g)]
+      const paramsAndValues = [...lineText.matchAll(/(\.[a-zA-Z0-9_]+)((?:\s+(?:"(?:\\.|[^"\\])*"|[+-]?\d+(?:\.\d+)?%?|[+-]?\.\d+%?|[^\s.]+))*)/g)]
         .map(match => match[0]);
 
       const missingParams = Object.entries(gameMechanicsSchema[keyword])
@@ -2458,14 +2460,16 @@ async function updateDiagnostics(
             value.length === 0 &&
             param.endsWith("_effects") &&
             modes.some((mode) => param === `.${mode}_effects`);
+          const isEmptyEffectsList = value.length === 0 && param === ".effects";
           const isIntentionallyBlankParameter =
             value.length === 0 &&
             (param === ".effect" ||
               param === ".target" ||
-              isEmptyDynamicModeEffects);
+              isEmptyDynamicModeEffects ||
+              isEmptyEffectsList);
 
           if (isIntentionallyBlankParameter) {
-            const warningMessage = isEmptyDynamicModeEffects
+            const warningMessage = isEmptyDynamicModeEffects || isEmptyEffectsList
               ? `No effect IDs provided for \`${param}\`. This may be intentional.`
               : `No value provided for \`${param}\`. This may be intentional.`;
             const diagnostic = new vscode.Diagnostic(
@@ -2479,6 +2483,29 @@ async function updateDiagnostics(
               vscode.DiagnosticSeverity.Warning
             );
             diagnostics.push(diagnostic);
+          } else if (
+            keyword === "display_modifier" &&
+            param === ".disabled_popup_text_types" &&
+            !isAllowed
+          ) {
+            const listText = paramAndValue.slice(param.length);
+            const tokenPattern = /"(?:\\.|[^"\\])*"|[^\s]+/g;
+            let token: RegExpExecArray | null;
+            while ((token = tokenPattern.exec(listText)) !== null) {
+              let tokenValue = token[0];
+              const quoted = tokenValue.startsWith('"') && tokenValue.endsWith('"');
+              if (quoted) {
+                try { tokenValue = JSON.parse(tokenValue) as string; } catch { /* Keep the raw token for diagnostics. */ }
+              }
+              if (allowedValues?.some(allowed => String(allowed) === tokenValue)) continue;
+              const tokenStart = index + param.length + token.index + (quoted ? 1 : 0);
+              const tokenEnd = tokenStart + token[0].length - (quoted ? 2 : 0);
+              diagnostics.push(new vscode.Diagnostic(
+                new vscode.Range(line.lineNumber, tokenStart, line.lineNumber, tokenEnd),
+                `Unknown display_modifier value \`${tokenValue}\`.`,
+                vscode.DiagnosticSeverity.Warning,
+              ));
+            }
           } else if ((!valueValidation.isValid || !isAllowed) && !canBeNull) {
             const diagnostic = new vscode.Diagnostic(
               new vscode.Range(

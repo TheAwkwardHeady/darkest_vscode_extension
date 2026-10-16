@@ -2,7 +2,7 @@
   "name": "darkest",
   "displayName": "Darkest Extension",
   "description": "For Darkest Dungeon Modding. Built by Zotlan and TheAwkwardHeady",
-  "version": "0.4.0",
+  "version": "0.5.1",
   "icon": "VSCODE_PIC.png",
   "engines": {
     "vscode": "^1.96.0"

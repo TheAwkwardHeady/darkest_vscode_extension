@@ -2210,6 +2210,22 @@ export const GAME_MECHANICS_SCHEMA: {
       description: "At the end of the quest, on of the heroes will gain the the quirk. If there are multiple lines .raid_finish_quirk_class_id, one will be picked at random"
     }
   },
+  Loot: {
+    ".code": {
+      type: "string",
+      description: "The ID of the loot table that's called when the monster dies.",
+      canBeNull: true,
+    },
+    ".count": {
+      type: "number",
+      description: "The number of pulls from the loot table.",
+      canBeNull: true,
+    },
+    ".raid_finish_quirk_class_id": {
+      type: "string",
+      description: "The quirk awarded to a hero when the raid finishes.",
+    },
+  },
   initiative: {
     ".number_of_turns_per_round": {
       type: "number",
@@ -2230,7 +2246,6 @@ export const GAME_MECHANICS_SCHEMA: {
     ".monster_class_id": {
       type: "string",
       description: "The ID of the monster the current monster will turn into on death.",
-      required: true
     },
     ".type": {
       type: "string",
@@ -2352,6 +2367,7 @@ export const GAME_MECHANICS_SCHEMA: {
         "tagged",
         "stun",
         "poison_resist",
+        "debuff_resist",
         "stun_resist",
         "bleed_resist",
         "resist",
