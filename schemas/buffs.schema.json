@@ -120,7 +120,13 @@
               "wildfire_apply_adjacent_targets",
               "hp_dot_heal",
               "hp_dot_bleed",
-              "hp_dot_poison"
+              "hp_dot_poison",
+              "effect_chance",
+              "crit_dmg_multiply",
+              "crit_dmg_add",
+              "hp_heal_amount_received",
+              "heal_crit_chance_add",
+              "heal_crit_chance_multiply"
             ]
           },
           "stat_sub_type": {
@@ -251,7 +257,7 @@
           },
           "attack_additional_effect_ids": {
             "type": "array",
-            "description": "Effect IDs to apply on attack hit/miss, when the buff rule is active. Effects resolve in order buffs were applied and after trinket effects.",
+            "description": "Effects triggered by the holder attacking.",
             "items": {
               "type": "string"
             }
@@ -271,6 +277,189 @@
           "clear_buffs_on_rule_active": {
             "type": "array",
             "description": "Buff IDs to clear when this buff’s rule is active. Cross-file ID validation is planned for a later phase.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "force_negative": {
+            "type": "boolean",
+            "description": "Forces the buff to be considered negative for tray/tooltips."
+          },
+          "Force_negative": {
+            "type": "boolean",
+            "description": "Forces the buff to be considered negative."
+          },
+          "friendly_additional_effect_ids": {
+            "type": "array",
+            "description": "Effects triggered by the holder using a friendly skill.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "attack_crit_additional_effect_ids": {
+            "type": "array",
+            "description": "Effects triggered when the holder scores a critical hit.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "melee_attack_additional_effect_ids": {
+            "type": "array",
+            "description": "Effects triggered when the holder uses a melee attack.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "ranged_attack_additional_effect_ids": {
+            "type": "array",
+            "description": "Effects triggered when the holder uses a ranged attack.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "riposte_additional_effect_ids": {
+            "type": "array",
+            "description": "Effects triggered when the holder ripostes.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "riposte_crit_additional_effect_ids": {
+            "type": "array",
+            "description": "Effects triggered when the holder scores a critical riposte.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "on_dodge_additional_effect_ids": {
+            "type": "array",
+            "description": "Effects triggered when the holder dodges.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "was_hit_additional_effect_ids": {
+            "type": "array",
+            "description": "Effects triggered when the holder is hit.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "was_hit_all_heroes_additional_effect_ids": {
+            "type": "array",
+            "description": "Effects triggered when the holder is hit; targets the party.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "was_hit_all_monsters_additional_effect_ids": {
+            "type": "array",
+            "description": "Effects triggered when the holder is hit; targets all monsters.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "kill_performer_additional_effect_ids": {
+            "type": "array",
+            "description": "Effects triggered when the holder kills a monster; targets the holder.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "kill_all_heroes_additional_effect_ids": {
+            "type": "array",
+            "description": "Effects triggered when the holder kills a monster; targets the party.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "kill_all_monsters_additional_effect_ids": {
+            "type": "array",
+            "description": "Effects triggered when the holder kills a monster; targets all monsters.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "riposte_kill_additional_effect_ids": {
+            "type": "array",
+            "description": "Effects triggered when the holder kills with a riposte.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "was_killed_additional_effect_ids": {
+            "type": "array",
+            "description": "Effects triggered when the holder is killed.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "was_killed_all_heroes_additional_effect_ids": {
+            "type": "array",
+            "description": "Effects triggered when the holder is killed; targets the party.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "was_killed_all_monsters_additional_effect_ids": {
+            "type": "array",
+            "description": "Effects triggered when the holder is killed; targets all monsters.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "turn_start_additional_effect_ids": {
+            "type": "array",
+            "description": "Effects triggered at the start of the holder's turn.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "turn_end_additional_effect_ids": {
+            "type": "array",
+            "description": "Effects triggered at the end of the holder's turn.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "round_end_additional_effect_ids": {
+            "type": "array",
+            "description": "Effects triggered at the end of a round.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "battle_finished_successfully_additional_effect_ids": {
+            "type": "array",
+            "description": "Effects triggered when combat ends successfully.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "on_quest_additional_effect_ids": {
+            "type": "array",
+            "description": "Effects triggered on quest completion.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "combat_start_additional_effect_ids": {
+            "type": "array",
+            "description": "Effects triggered when combat starts.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "move_skill_additional_effect_ids": {
+            "type": "array",
+            "description": "Effects triggered when the holder uses a move skill.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "quest_start_additional_effect_ids": {
+            "type": "array",
+            "description": "Effects triggered at the start of a quest.",
             "items": {
               "type": "string"
             }
@@ -357,17 +546,7 @@
               "properties": {
                 "stat_sub_type": {
                   "type": "string",
-                  "enum": [
-                    "tag",
-                    "stealth",
-                    "hp_dot_heal",
-                    "stress_dot",
-                    "shuffle_dot",
-                    "guarded",
-                    "status",
-                    "vampire"
-                  ],
-                  "description": "Riposte subtype."
+                  "description": "Effect ID from an effects file, or a supported riposte subtype such as tag, stealth, hp_dot_heal, stress_dot, shuffle_dot, guarded, status, or vampire."
                 }
               }
             }

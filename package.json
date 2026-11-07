@@ -2,7 +2,7 @@
   "name": "darkest",
   "displayName": "Darkest Extension",
   "description": "For Darkest Dungeon Modding. Built by Zotlan and TheAwkwardHeady",
-  "version": "0.5.1",
+  "version": "0.5.3",
   "icon": "VSCODE_PIC.png",
   "engines": {
     "vscode": "^1.96.0"
@@ -23,7 +23,8 @@
           "darkest"
         ],
         "extensions": [
-          ".darkest"
+          ".darkest",
+          ".info"
         ],
         "configuration": "./language-configuration.json"
       },
@@ -851,8 +852,8 @@
         "label": "Resistance Buffs"
       },
       {
-    "id": "darkest.skillBuffs",
-    "label": "Skill Chance Buffs"
+        "id": "darkest.skillBuffs",
+        "label": "Skill Chance Buffs"
       },
       {
         "id": "darkest.stressBuffs",

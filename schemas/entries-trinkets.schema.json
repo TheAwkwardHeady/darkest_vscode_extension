@@ -249,6 +249,34 @@
             "items": {
               "type": "string"
             }
+          },
+          "turn_start_additional_effects": {
+            "type": "array",
+            "description": "On Turn Start",
+            "items": {
+              "type": "string"
+            }
+          },
+          "move_skill_additional_effects": {
+            "type": "array",
+            "description": "Triggers when holder moves using their move skill",
+            "items": {
+              "type": "string"
+            }
+          },
+          "quest_start_additional_effects": {
+            "type": "array",
+            "description": "Triggers at the very start of a quest",
+            "items": {
+              "type": "string"
+            }
+          },
+          "combat_start_additional_effects": {
+            "type": "array",
+            "description": "Triggers on starting a combat",
+            "items": {
+              "type": "string"
+            }
           }
         },
         "additionalProperties": true

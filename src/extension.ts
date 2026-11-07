@@ -420,6 +420,9 @@ export function activate(context: vscode.ExtensionContext) {
                 if (sourceListData.comments){sources += ` (${sourceListData.comments[value]})`;}
               }
               hint += `\n#### ${sourceListData.title}:\n${sources}`;
+              if (sourceListData.referenceUrl) {
+                hint += `\n\n[Buff source reference](${sourceListData.referenceUrl})`;
+              }
             }
 
             return new vscode.Hover([new vscode.MarkdownString(hint)]);

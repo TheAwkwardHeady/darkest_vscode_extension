@@ -1,5 +1,18 @@
 # Change Log
 
+## [0.5.3] - 2026-10-26
+
+### Added
+- Added workspace effect-ID completion after `.effect` and `.effects` values in `.info` files.
+- Associated `.info` files with the Darkest language support.
+- Corrected buff trigger fields to use the buff-specific `*_additional_effect_ids` names, distinct from trinket `*_additional_effects` fields.
+- Added the exact-case `Force_negative` boolean field to buff schema completion and validation.
+- Added the full valid buff-source list to completion, hover, and validation for `.buff_source_type`, `.dotSource`, and `.steal_buff_source_type`.
+- Added buff stat types, `force_negative`, arbitrary effect-ID riposte subtypes, and workspace effect-ID completion for riposte buffs.
+- Added the new effect targets and effect parameters from the October 2026 authoring notes, including the Stumble/Move Chance behavior note.
+- Added the expanded additional-effect trigger set to trinket entries and buff definitions.
+- Added `.ai_valid` to combat skill validation and glossary data.
+
 ## [0.3.0] - 2025-09-29
 
 ### Added:

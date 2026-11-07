@@ -33,7 +33,8 @@ export const allStatTypes = [
   "random_target_friendly_chance", "random_target_attack_chance", "transfer_debuff_from_attacker_chance", "transfer_buff_from_attacker_chance",
   "quirk_tag_evolution_duration", "deathblow_chance", "heartattack_stress_heal_percent", "ignore_guard", "buff_duration_percent", "tag",
   "riposte_duration_percent", "hp_dot_burn", "hp_dot_burn_decay_percent", "hp_dot_burn_amount_percent",
-  "hp_dot_burn_amount_received_percent", "wildfire_apply_adjacent_targets", "cure_burn_chance", "cure_burn_received_chance"
+  "hp_dot_burn_amount_received_percent", "wildfire_apply_adjacent_targets", "cure_burn_chance", "cure_burn_received_chance",
+  "effect_chance", "crit_dmg_multiply", "crit_dmg_add", "hp_heal_amount_received", "heal_crit_chance_add", "heal_crit_chance_multiply"
 ];
 
 export const statSubtypesByType: Record<string, Suggestion[]> = {
@@ -43,7 +44,7 @@ export const statSubtypesByType: Record<string, Suggestion[]> = {
   upgrade_discount: makeSuggestions(["armour", "weapon", "combat_skill", "camping_skill"], "Upgrade category from Buff values.txt. The source notes custom values can be used for custom tooltips."),
   activity_side_effect_chance: makeSuggestions(["add_currency", "remove_currency", "add_trinket", "remove_trinket", "activity_lock", "apply_buff", "go_missing"], "Activity side effect from Buff values.txt."),
   disable_combat_skill_attribute: makeSuggestions(["heal", "buff", "debuff", "bleed", "poison", "stun", "tag", "stress", "move", "disease", "guard", "daze"], "Combat skill attribute from Buff values.txt."),
-  riposte: makeSuggestions(["effect ID", "tag", "stealth", "hp_dot_bleed", "hp_dot_poison", "hp_dot_heal", "stress_dot", "shuffle_dot", "guarded", "status", "vampire"], "Riposte subtype from Buff values.txt."),
+  riposte: makeSuggestions(["tag", "stealth", "hp_dot_bleed", "hp_dot_poison", "hp_dot_heal", "stress_dot", "shuffle_dot", "guarded", "status", "vampire"], "Riposte subtype from Buff values.txt, or an effect ID from the workspace."),
   quirk_tag_evolution_duration: makeSuggestions(["Quirk Tag"], "The source notes this can be used for custom tooltips.")
 };
 
@@ -76,7 +77,7 @@ export const durationTypes = makeSuggestions([
 ], "Duration type listed in Buff values.txt.");
 
 export class BuffSchemaCompletionProvider implements vscode.CompletionItemProvider {
-  provideCompletionItems(document: vscode.TextDocument, position: vscode.Position): vscode.CompletionItem[] | undefined {
+  async provideCompletionItems(document: vscode.TextDocument, position: vscode.Position): Promise<vscode.CompletionItem[] | undefined> {
     if (!/\.buffs\.json$/i.test(document.fileName)) return undefined;
     const lineBeforeCursor = document.lineAt(position.line).text.slice(0, position.character);
     const match = /"(stat_type|stat_sub_type|rule_type|duration_type)"\s*:\s*"([^"]*)$/.exec(lineBeforeCursor);
@@ -96,6 +97,18 @@ export class BuffSchemaCompletionProvider implements vscode.CompletionItemProvid
       const typeMatch = /"stat_type"\s*:\s*"([^"]+)"/.exec(objectText);
       const statType = typeMatch?.[1];
       available = statType ? (statSubtypesByType[statType] ?? []) : [];
+      if (statType === "riposte") {
+        const files = await vscode.workspace.findFiles("**/*effects*", "**/{node_modules,.git}/**");
+        const singularEffectFiles = await vscode.workspace.findFiles("**/*.effect", "**/{node_modules,.git}/**");
+        files.push(...singularEffectFiles);
+        const effectIds = new Set<string>();
+        for (const file of files) {
+          const source = await vscode.workspace.fs.readFile(file);
+          const text = Buffer.from(source).toString("utf8");
+          for (const match of text.matchAll(/\.name\s+"([^"]+)"/g)) effectIds.add(match[1]);
+        }
+        available = [...available, ...makeSuggestions([...effectIds], "Effect ID defined in a workspace effects file.")];
+      }
     } else if (key === "rule_type") {
       available = ruleTypes;
     } else if (key === "duration_type") {

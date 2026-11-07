@@ -27,6 +27,10 @@ const effectFilePattern = "**/*effects*";
 const buffFilePattern = "**/*.buffs.json";
 const excludedPattern = "**/{node_modules,.git}/**";
 
+export function getIndexedEffectIds(): string[] {
+  return [...effectDefinitions.keys()].sort((left, right) => left.localeCompare(right));
+}
+
 function referenceKey(kind: "effect" | "buff", id: string): string {
   return `${kind}:${id}`;
 }

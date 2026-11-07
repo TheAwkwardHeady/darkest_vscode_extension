@@ -18,15 +18,51 @@ export const Sources:{
   [key: string]: {
     title: string,
     list: string[]
+    referenceUrl?: string
     comments?: {
       [key: string]: string
     }
   };
 } = {
   buff: {
-    title: "Refer to the document below by Sasiji for detailed information on each Buff Source",
+    title: "Valid Buff Sources",
+    referenceUrl: "https://docs.google.com/spreadsheets/d/1KvN2vYP6_4kw0SmRKEmrN_BRAQGPQ5mKB28xcb4HM7s",
     list: [
-      "https://docs.google.com/spreadsheets/d/1KvN2vYP6_4kw0SmRKEmrN_BRAQGPQ5mKB28xcb4HM7s"
+      "bsrc_skill",
+      "bsrc_notspecified",
+      "bsrc_affliction",
+      "bsrc_virtue",
+      "bsrc_item",
+      "bsrc_curio",
+      "bsrc_disease",
+      "bsrc_riposte",
+      "bsrc_campingskill",
+      "bsrc_quirk",
+      "bsrc_trinket",
+      "bsrc_trinket_set",
+      "bsrc_instantSkill",
+      "bsrc_guard",
+      "bsrc_deathsdoor",
+      "bsrc_deathsdoor_recovery",
+      "bsrc_deathsdoor_recovery_heart_attack",
+      "bsrc_quest_failure",
+      "bsrc_companion",
+      "bsrc_stun",
+      "bsrc_town",
+      "bsrc_district",
+      "bsrc_torchsettings",
+      "bsrc_crit",
+      "bsrc_trinket_additional_effect",
+      "bsrc_battle_modifier",
+      "bsrc_never_again",
+      "bsrc_vampire",
+      "bsrc_town_event",
+      "bsrc_flashback_start",
+      "bsrc_flashback_result",
+      "bsrc_completed_darkest_dungeon_quest_party_hero",
+      "bsrc_quest_modifier",
+      "bsrc_last_hero",
+      "combat_end",
     ]
   },
   heal: {
@@ -97,10 +133,20 @@ export const GAME_MECHANICS_SCHEMA: {
         "target_enemy_rank",
         "this_trinket",
         "target_enemy_random",
+        "target_hero_random",
+        "performer_adjacent_random",
+        "performer_adjacent_front",
+        "performer_adjacent_behind",
+        "performer_adjacents",
+        "target_adjacent_random",
+        "target_adjacent_front",
+        "target_adjacent_behind",
+        "target_adjacents",
+        "other_trinket",
         "global",
       ],
       description: "The target of the effect.",
-      addInfo: "The target_enemy_rank value requires .clear_rank_target. The target_enemy_random value selects a random monster. The this_trinket value targets the trinket that triggered the effect.",
+      addInfo: "The target_enemy_rank value requires .clear_rank_target. target_enemy_random and target_hero_random select a random unit of that side. Adjacent targets select neighboring ranks relative to the performer or target. this_trinket targets the trinket that triggered the effect; other_trinket selects the other equipped trinket if present.",
     },
     ".curio_result_type": {
       type: "string",
@@ -354,6 +400,19 @@ export const GAME_MECHANICS_SCHEMA: {
       description: "The effect used by the target on Riposte.",
       addInfo: "This stacks with the `.effects` of the `.riposte skill`, but there can only be one effect applied to the target at once by `.riposte_effect`,"
     },
+    ".suppress_resist_popup": { type: "boolean", description: "Suppresses resistance popups caused by this effect. Defaults to false." },
+    ".suppress_zero_heal_popup": { type: "boolean", description: "Suppresses healing popups from this effect when the applied healing is zero. Defaults to false." },
+    ".health_damage_percent": { type: "number", description: "Deals a fraction of the target's maximum HP as damage (0.1 is 10%)." },
+    ".description_tooltip_id": { type: "string", description: "Localization string ID that replaces the effect text." },
+    ".cure_quirk_tags": { type: "string", description: "Clears quirks with the specified quirk tag ID." },
+    ".cure_mortality": { type: "number", description: "Cures mortality debuffs when set to 1 or higher." },
+    ".requires_status": { type: "string", description: "The effect is valid only when the target has this status ID." },
+    ".trigger_limit_minimum_decrease": { type: "number", description: "Minimum amount to decrease a trinket's trigger limit." },
+    ".trigger_limit_maximum_decrease": { type: "number", description: "Maximum amount to decrease a trinket's trigger limit." },
+    ".set_trigger_limit": { type: "number", description: "Sets the trinket trigger limit to this amount." },
+    ".requires_bsrc": { type: "string", description: "The effect is valid only if the target has a buff with this source ID." },
+    ".gain_loot": { type: "string", description: "Loot table ID; loot gained in combat is added to the end-of-battle loot." },
+    ".suppress_bark": { type: "boolean", description: "Suppresses barks caused by this effect. Defaults to false." },
     ".clear_riposte": {
       type: "boolean",
       allowed_values: [1, 0],
@@ -397,7 +456,8 @@ export const GAME_MECHANICS_SCHEMA: {
       type: "boolean",
       allowed_values: [1, 0],
       commonName: "Stumble",
-      description: "Applies Shuffle DOT to the target. Despite the parameter name, doesnt to DMG over time, shuffles the target at the beginning of their turn instead.",
+      description: "Applies Stumble (Shuffle DOT) to the target. It checks move resistance and shuffles the target at the beginning of their turn.",
+      addInfo: "Stumble does not scale its chance with Move Chance, even though it checks move resistance.",
     },
     ".shuffle_dot": {
       type: "number",
@@ -438,6 +498,7 @@ export const GAME_MECHANICS_SCHEMA: {
     },
     ".steal_buff_source_type": {
       type: "string",
+      allowed_values: Sources["buff"].list,
       description: "The all buffs from the target that have the specified buff source type.",
       sourceList: "buff"
     },
@@ -715,11 +776,13 @@ export const GAME_MECHANICS_SCHEMA: {
     },
     ".dotSource": {
       type: "string",
+      allowed_values: Sources["buff"].list,
       description: "Specifies the source of DOTs applied by the the effect. Usable sources are the same as for `.buff_source_type`",
       sourceList: "buff"
     },
     ".buff_source_type": {
       type: "string",
+      allowed_values: Sources["buff"].list,
       description: "Specifies the buff source used by the effect.",
       sourceList: "buff"
     },
@@ -812,8 +875,9 @@ export const GAME_MECHANICS_SCHEMA: {
       description: "Used with .initiative_change to force an extra action to happen immediately.",
     },
     ".cure_burn": {
-      type: "number",
-      description: "The amount of Burn cured.",
+      type: "boolean",
+      allowed_values: [1, 0],
+      description: "Clears Burn from the target.",
     },
     ".controlled_burn_amount": {
       type: "number",
@@ -843,6 +907,7 @@ export const GAME_MECHANICS_SCHEMA: {
     },
   },
   combat_skill: {
+    ".ai_valid": { type: "boolean", description: "Whether this combat skill is valid for AI use." },
     ".id": {
       type: "string",
       description: "The Skill's ID.",
